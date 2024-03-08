@@ -8,9 +8,9 @@
 import Foundation
 
 
-class SettingResponse {
-    var name: String
-    var value: Any
+public class SettingResponse {
+    public var name: String
+    public var value: Any
     
     init(name: String, value: Any) {
         self.name = name

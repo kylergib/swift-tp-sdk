@@ -7,13 +7,13 @@
 
 import Foundation
 
-class Connector {
-    var id: String
-    var name: String
-    var format: String
-    var category: Category
-    var data: ConnectorData
-    var subCategory: Category?
+public class Connector {
+    public var id: String
+    public var name: String
+    public var format: String
+    public var category: Category
+    public var data: ConnectorData
+    public var subCategory: Category?
     
     private var runAction: ((ActionResponse) -> Void)?
         var onAction: ((ActionResponse) -> Void)? {

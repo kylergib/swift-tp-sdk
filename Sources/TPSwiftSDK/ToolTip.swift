@@ -8,11 +8,11 @@
 import Foundation
 
 
-class ToolTip {
+public class ToolTip {
     
-    var title: String?
-    var body: String
-    var docUrl: String?
+    public var title: String?
+    public var body: String
+    public var docUrl: String?
     
     init(body: String) {
         self.body = body

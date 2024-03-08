@@ -13,14 +13,14 @@ import NIOPosix
 public class TPClient {
     private var channel: Channel?
     private var currentHandler: MessageHandler?
-    var address: String
-    var port: Int
-    var plugin: Plugin?
+    public var address: String
+    public var port: Int
+    public var plugin: Plugin?
 
     private var messageReceived: (([String: Any]) -> Void)?
 
     private var connected: ((Bool) -> Void)?
-    var onConnection: ((Bool) -> Void)? {
+    public var onConnection: ((Bool) -> Void)? {
         get { connected }
         set(value) {
             connected = value
@@ -28,7 +28,7 @@ public class TPClient {
     }
 
     private var settingsChange: (([SettingResponse]) -> Void)?
-    var onSettingsChange: (([SettingResponse]) -> Void)? {
+    public var onSettingsChange: (([SettingResponse]) -> Void)? {
         get { settingsChange }
         set(value) {
             settingsChange = value
@@ -36,7 +36,7 @@ public class TPClient {
     }
 
     private var info: ((Info) -> Void)?
-    var onInfo: ((Info) -> Void)? {
+    public var onInfo: ((Info) -> Void)? {
         get { info }
         set(value) {
             info = value
@@ -118,7 +118,7 @@ public class TPClient {
         currentHandler?.messageReceivedCallback = messageReceived
     }
 
-    func handleSettings(settings: [[String: Any]]) {
+    public func handleSettings(settings: [[String: Any]]) {
         var settingList: [SettingResponse] = []
         settings.forEach { setting in
             setting.forEach { (name: String, value: Any) in
@@ -128,7 +128,7 @@ public class TPClient {
         onSettingsChange?(settingList)
     }
 
-    func start() {
+    public func start() {
         if plugin == nil {
             print("Cannot connect to Touch Portal without an Entry class")
             return
@@ -159,17 +159,17 @@ public class TPClient {
         }
     }
 
-    func actionReceived() {}
-    func buildEntry() {}
+    public func actionReceived() {}
+    public func buildEntry() {}
 }
 
 class MessageHandler: ChannelInboundHandler {
     public typealias InboundIn = ByteBuffer
     public typealias OutboundOut = ByteBuffer
-    var channel: Channel?
-    var pluginId: String?
+    public var channel: Channel?
+    public var pluginId: String?
 
-    var messageReceivedCallback: (([String: Any]) -> Void)?
+    public var messageReceivedCallback: (([String: Any]) -> Void)?
 
     public func channelInactive(context: ChannelHandlerContext) {
         print("Disconnected from \(String(describing: context.remoteAddress))")

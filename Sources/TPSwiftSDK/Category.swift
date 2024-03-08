@@ -7,10 +7,10 @@
 
 import Foundation
 
-class Category {
-    var id: String
-    var name: String
-    var imagePath: String?
+public class Category {
+    public var id: String
+    public var name: String
+    public var imagePath: String?
 
 
     init(id: String, name: String, imagePath: String? = nil) {

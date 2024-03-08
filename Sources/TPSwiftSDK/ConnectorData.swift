@@ -7,12 +7,12 @@
 
 import Foundation
 
-class ConnectorData {
-    var id: String
-    var dataType: ConnectorDataType = ConnectorDataType.choice
-    var label: String
-    var defaultValue: String
-    var valueChoices: [String]
+public class ConnectorData {
+    public var id: String
+    public var dataType: ConnectorDataType = ConnectorDataType.choice
+    public var label: String
+    public var defaultValue: String
+    public var valueChoices: [String]
     
     // TODO: add connector callback
 
@@ -24,6 +24,6 @@ class ConnectorData {
     }
 }
 
-enum ConnectorDataType: String {
+public enum ConnectorDataType: String {
     case choice
 }

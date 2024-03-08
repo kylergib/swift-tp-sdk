@@ -8,14 +8,14 @@
 import Foundation
 
 
-class State {
-    var id: String
-    var type: StateType
-    var description: String
-    var defaultValue: String
-    var valueChoices: [String]
-    var parentGroup: String?
-    var category: Category
+public class State {
+    public var id: String
+    public var type: StateType
+    public var description: String
+    public var defaultValue: String
+    public var valueChoices: [String]
+    public var parentGroup: String?
+    public var category: Category
     init(id: String, type: StateType, description: String, category: Category,
          defaultValue: String = "", valueChoices: [String] = []) {
         self.id = id
@@ -28,7 +28,7 @@ class State {
 }
 
 
-enum StateType: String {
+public enum StateType: String {
     case choice
     case text
 }

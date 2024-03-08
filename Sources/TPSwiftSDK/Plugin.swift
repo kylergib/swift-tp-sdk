@@ -7,18 +7,18 @@
 
 import Foundation
 
-class Plugin {
+public class Plugin {
     // LEFT OFF ON ENTRY
-    var api: ApiVersion
+    public var api: ApiVersion
 
-    var version: Int
-    var name: String
-    var pluginId: String
-    var configuration: Configuration?
-    var pluginStartCommand: String?
-    var pluginStartCmdWindows: String?
-    var pluginStartCmdMac: String?
-    var pluginStartCmdLinux: String?
+    public var version: Int
+    public var name: String
+    public var pluginId: String
+    public var configuration: Configuration?
+    public var pluginStartCommand: String?
+    public var pluginStartCmdWindows: String?
+    public var pluginStartCmdMac: String?
+    public var pluginStartCmdLinux: String?
     private var categories = [String: Category]()
     private var settings = [String: Setting]()
 
@@ -30,7 +30,7 @@ class Plugin {
     private var connectors = [String: Connector]() // TODO: replace with connector class
 //    var stateCategories = [String: Category]()
     private var states = [String: State]() // TODO: replace with state class
-    var subCategories: [String: Category]? // TODO: would this be an array of catogories? maybe child class of category
+    public var subCategories: [String: Category]? // TODO: would this be an array of catogories? maybe child class of category
 
     init(api: ApiVersion, version: Int, name: String, pluginId: String) {
         self.api = api
@@ -39,35 +39,34 @@ class Plugin {
         self.pluginId = pluginId
     }
 
-    func addCategory(category: Category) {
+    public func addCategory(category: Category) {
         categories[category.id] = category
     }
 
-    func addSetting(setting: Setting) {
+    public func addSetting(setting: Setting) {
         settings[setting.name] = setting
     }
 
-    func addAction(action: Action) {
+    public func addAction(action: Action) {
         actions[action.id] = action
     }
 
-    func addEvent(event: Event) {
+    public func addEvent(event: Event) {
         events[event.id] = event
     }
 
-    func addConnector(connector: Connector) {
+    public func addConnector(connector: Connector) {
         connectors[connector.id] = connector
     }
 
-    func addState(state: State) {
+    public func addState(state: State) {
         states[state.id] = state
     }
-    func getActionById(actionId: String) -> Action? {
+    public func getActionById(actionId: String) -> Action? {
         return actions[actionId]
     }
 
-    // TODO: add getters to get items from key/id
-    func buildEntry() {
+    public func buildEntry() {
 //        print("starting build")
         var rootDict = [String: Any]()
         rootDict["api"] = api.rawValue
@@ -279,7 +278,7 @@ class Plugin {
     }
 }
 
-enum ApiVersion: Int {
+public enum ApiVersion: Int {
 //    case v1 = 1
 //    case v2 = 2
 //    case v3 = 3

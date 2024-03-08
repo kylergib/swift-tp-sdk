@@ -8,10 +8,10 @@
 import Foundation
 
 
-class Configuration {
-    var colorDark: String?
-    var colorLight: String?
-    var parentCategory: ParentCategory?
+public class Configuration {
+    public var colorDark: String?
+    public var colorLight: String?
+    public var parentCategory: ParentCategory?
     
     init(colorDark: String? = nil, colorLight: String? = nil, parentCategory: ParentCategory? = nil) {
         self.colorDark = colorDark
@@ -21,7 +21,7 @@ class Configuration {
     
 }
 
-enum ParentCategory: String {
+public enum ParentCategory: String {
     case audio
     case streaming
     case content

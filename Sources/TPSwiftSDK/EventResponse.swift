@@ -8,12 +8,12 @@
 import Foundation
 
 
-class EventResponse {
-    var type: String
-    var pluginId: String
-    var actionId: String
-    var dataId: String
-    var value: Any
+public class EventResponse {
+    public var type: String
+    public var pluginId: String
+    public var actionId: String
+    public var dataId: String
+    public var value: Any
     
     init(type: String, pluginId: String, actionId: String,
          dataId: String, value: Any) {

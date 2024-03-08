@@ -7,8 +7,8 @@
 
 import Foundation
 
-class ActionLine {
-    var language: String
+public class ActionLine {
+    public var language: String
     private var data: [String]
     private var suggestions: [String: Any]
     // TODO: API doc says optional for suggestions, but touch portal throws error if it is not included https://discord.com/channels/548426182698467339/1212257743256424458
@@ -19,17 +19,17 @@ class ActionLine {
         self.suggestions = suggestions
     }
 
-    func addData(data: String) {
+    public func addData(data: String) {
         self.data.append(data)
     }
 
-    func addSuggestion(key: String, value: Any) {
+    public func addSuggestion(key: String, value: Any) {
         suggestions[key] = value
     }
-    func getData() -> [String] {
+    public func getData() -> [String] {
         return data
     }
-    func getSuggestions() -> [String: Any] {
+    public func getSuggestions() -> [String: Any] {
         return suggestions
     }
 }

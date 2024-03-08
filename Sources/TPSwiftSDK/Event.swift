@@ -7,18 +7,18 @@
 
 import Foundation
 
-class Event {
-    var id: String
-    var name: String
-    var format: String
-    var category: Category
-    var type: EventType = .communicate
-    var valueChoices: [String]? //unsure if it can be a number
-    var valueType: EventValueType
-    var valueStateId: String
-    var subCategory: Category?
+public class Event {
+    public var id: String
+    public var name: String
+    public var format: String
+    public var category: Category
+    public var type: EventType = .communicate
+    public var valueChoices: [String]? //unsure if it can be a number
+    public var valueType: EventValueType
+    public var valueStateId: String
+    public var subCategory: Category?
     private var runEvent: ((ActionResponse) -> Void)?
-    var onEvent: ((ActionResponse) -> Void)? {
+    public var onEvent: ((ActionResponse) -> Void)? {
         get { runEvent }
         set(value) {
             runEvent = value
@@ -41,11 +41,11 @@ class Event {
     
 }
 
-enum EventType: String {
+public enum EventType: String {
     case communicate
 }
 
-enum EventValueType: String {
+public enum EventValueType: String {
     case choice
     case text
 }

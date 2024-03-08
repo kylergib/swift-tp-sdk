@@ -7,12 +7,12 @@
 
 import Foundation
 
-class ActionResponse {
-    var type: String?
-    var pluginId: String?
-    var actionId: String?
-    var data: [ActionResponseData]?
-    var value: Any?
+public class ActionResponse {
+    public var type: String?
+    public var pluginId: String?
+    public var actionId: String?
+    public var data: [ActionResponseData]?
+    public var value: Any?
 
     init(type: String? = nil, pluginId: String? = nil, actionId: String? = nil,
          data: [ActionResponseData]? = nil, value: Any? = nil)
@@ -25,9 +25,9 @@ class ActionResponse {
     }
 }
 
-class ActionResponseData {
-    var id: String?
-    var value: Any?
+public class ActionResponseData {
+    public var id: String?
+    public var value: Any?
     
     init(id: String?, value: Any?) {
         self.id = id

@@ -6,9 +6,9 @@
 //
 
 
-protocol TextRepresentable {}
-protocol NumberRepresentable {}
-protocol BoolRepresentable {}
+public protocol TextRepresentable {}
+public protocol NumberRepresentable {}
+public protocol BoolRepresentable {}
 extension String: TextRepresentable {}
 extension Int: NumberRepresentable {}
 extension Bool: BoolRepresentable {}
