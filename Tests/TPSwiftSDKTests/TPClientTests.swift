@@ -1,8 +1,8 @@
 @testable import TPSwiftSDK
 import XCTest
 
-final class TPSwiftSDKTests: XCTestCase {
-    func testTP() throws {
+final class TPClientTests: XCTestCase {
+    func testPropertyChanges() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest
 
@@ -25,5 +25,11 @@ final class TPSwiftSDKTests: XCTestCase {
         client.port = 723
         XCTAssert(client.address == "10.1.10.143", "Address is not equal")
         XCTAssert(client.port == 723, "Port is not equal")
+    }
+
+    func testConnection() {
+        
+
+        // do something when connection happens
     }
 }

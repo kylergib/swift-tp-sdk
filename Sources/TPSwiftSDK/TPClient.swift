@@ -1,0 +1,227 @@
+//
+//  TPClient.swift
+//  TouchPortalSwiftSDK
+//
+//  Created by kyle on 3/4/24.
+//
+// import Compression
+import Foundation
+import NIOCore
+import NIOPosix
+// import SwiftUI
+
+public class TPClient {
+    private var channel: Channel?
+    private var currentHandler: MessageHandler?
+    var address: String
+    var port: Int
+    var plugin: Plugin?
+
+    private var messageReceived: (([String: Any]) -> Void)?
+
+    private var connected: ((Bool) -> Void)?
+    var onConnection: ((Bool) -> Void)? {
+        get { connected }
+        set(value) {
+            connected = value
+        }
+    }
+
+    private var settingsChange: (([SettingResponse]) -> Void)?
+    var onSettingsChange: (([SettingResponse]) -> Void)? {
+        get { settingsChange }
+        set(value) {
+            settingsChange = value
+        }
+    }
+
+    private var info: ((Info) -> Void)?
+    var onInfo: ((Info) -> Void)? {
+        get { info }
+        set(value) {
+            info = value
+        }
+    }
+
+//    init() {
+//        currentHandler = MessageHandler()
+//        address = "127.0.0.1" // default is local host, but in touch portal 4 you can go from a separate computer
+//        port = 12136
+//        messageReceived = { json in
+//            var foundElement = false
+//            print("message recieved: ")
+//            print(json)
+//            if let setting = json["settings"] as? [Any] {
+//                self.onSettingsChange?(setting)
+//                foundElement = true
+//            }
+//            if (!foundElement) {
+//                print(json)
+//            }
+//        }
+//        currentHandler?.messageReceivedCallback = messageReceived
+//    }
+
+    init(address: String = "127.0.0.1", port: Int = 12136) {
+        currentHandler = MessageHandler()
+        self.address = address
+        self.port = port
+        messageReceived = { json in
+            print("message recieved: ")
+            print(json)
+            if let type = json["type"] as? String {
+                switch type {
+                case "info":
+                    if let settings = json["settings"] as? [[String: Any]] {
+                        self.handleSettings(settings: settings)
+                    }
+                    if let sdkVersion = json["sdkVersion"] as? Int,
+                    let tpVersionString = json["tpVersionString"] as? String,
+                    let tpVersionCode = json["tpVersionCode"] as? Int,
+                    let pluginVersion = json["pluginVersion"] as? Int,
+                       let status = json["status"] as? String {
+                        
+                        self.onInfo?(Info(sdkVersion: sdkVersion, tpVersionString: tpVersionString, tpVersionCode: tpVersionCode, pluginVersion: pluginVersion, status: status))
+                    }
+                case "setting":
+                    print("getting settings")
+                    if let settings = json["values"] as? [[String: Any]] {
+                        self.handleSettings(settings: settings)
+                    }
+                case "action":
+                    print("received action")
+                    let actionId = json["actionId"] as? String
+                    let type = json["type"] as? String
+                    let data = json["data"] as? [[String: Any]]
+                    let pluginId = json["pluginId"] as? String
+
+                    if actionId == nil {
+                        return
+                    }
+                    var dataList: [ActionResponseData] = []
+                    data?.forEach { temp in
+                        let id = temp["id"] as? String
+                        let value = temp["value"]
+                        dataList.append(ActionResponseData(id: id, value: value))
+                    }
+                    let action = self.plugin?.getActionById(actionId: actionId!)
+                    action?.onAction?(ActionResponse(type: type, pluginId: pluginId, actionId: actionId, data: dataList))
+
+                default:
+                    print("Could not find match")
+                }
+            } else {
+                print("does not have type")
+                print(json)
+            }
+        }
+        currentHandler?.messageReceivedCallback = messageReceived
+    }
+
+    func handleSettings(settings: [[String: Any]]) {
+        var settingList: [SettingResponse] = []
+        settings.forEach { setting in
+            setting.forEach { (name: String, value: Any) in
+                settingList.append(SettingResponse(name: name, value: value))
+            }
+        }
+        onSettingsChange?(settingList)
+    }
+
+    func start() {
+        if plugin == nil {
+            print("Cannot connect to Touch Portal without an Entry class")
+            return
+        }
+        currentHandler?.pluginId = plugin?.pluginId
+        let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+        let bootstrap = ClientBootstrap(group: group)
+            .channelOption(ChannelOptions.socketOption(.tcp_nodelay), value: 1) // disables algo where it will try to send immediately rather than split into chunks, may still split into chunks, will need to test
+            .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
+            .channelInitializer { channel in
+                if self.currentHandler == nil {
+                    self.currentHandler = MessageHandler()
+                    self.currentHandler?.pluginId = self.plugin?.pluginId
+                    self.currentHandler?.messageReceivedCallback = self.messageReceived
+                }
+                return channel.pipeline.addHandler(self.currentHandler!)
+            }
+
+        defer {
+            try? group.syncShutdownGracefully()
+        }
+
+        do {
+            channel = try bootstrap.connect(host: address, port: port).wait()
+            try channel!.closeFuture.wait()
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+
+    func actionReceived() {}
+    func buildEntry() {}
+}
+
+class MessageHandler: ChannelInboundHandler {
+    public typealias InboundIn = ByteBuffer
+    public typealias OutboundOut = ByteBuffer
+    var channel: Channel?
+    var pluginId: String?
+
+    var messageReceivedCallback: (([String: Any]) -> Void)?
+
+    public func channelInactive(context: ChannelHandlerContext) {
+        print("Disconnected from \(String(describing: context.remoteAddress))")
+//        connectedCallback?(false)
+    }
+
+    public func channelActive(context: ChannelHandlerContext) {
+        print("connected to \(String(describing: context.remoteAddress))")
+        channel = context.channel
+//        connectedCallback?(true)
+        print("sending message")
+        if pluginId == nil { print("Cannot pair to TP because pluginId is nil") }
+        var pair = """
+        {"type":"pair","id":"\(pluginId!)"}
+        """
+
+        sendMessage(message: pair + "\n")
+    }
+
+    public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+        let buffer = unwrapInboundIn(data)
+        if let receivedString = buffer.getString(at: 0, length: buffer.readableBytes) {
+            guard let jsonData = receivedString.data(using: .utf8) else {
+                print("Error: Cannot convert string to Data")
+                return
+            }
+            print(jsonData)
+            do {
+                if let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                    messageReceivedCallback?(jsonObject)
+                }
+            } catch {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    public func sendMessage(message: String) {
+//        if channelHandlerContext == nil { return }
+        if channel == nil { return }
+        print("past nil")
+        if let myData = message.data(using: .utf8) {
+            print("after mydata")
+            var buffer = channel!.allocator.buffer(capacity: myData.count)
+            buffer.writeBytes(myData)
+            channel!.writeAndFlush(buffer, promise: nil)
+            print("after send")
+        }
+    }
+
+    public func errorCaught(context: ChannelHandlerContext, error: Error) {
+        print("\(error)")
+        context.close(promise: nil)
+    }
+}
