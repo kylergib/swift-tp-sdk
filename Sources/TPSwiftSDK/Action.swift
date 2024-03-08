@@ -7,21 +7,21 @@
 
 import Foundation
 
-class Action {
-    var id: String
-    var name: String
+public class Action {
+    public var id: String
+    public var name: String
     // name languages?
-    var type: ActionType
-    var category: Category
-    var executionType: ExecutionType? // mac only, only AppleScript or Bash allowed
-    var executionCmd: String? // path of execution
+    public var type: ActionType
+    public var category: Category
+    public var executionType: ExecutionType? // mac only, only AppleScript or Bash allowed
+    public var executionCmd: String? // path of execution
     // If you use %TP_PLUGIN_FOLDER% in the text above, it will be replaced with the path to the base plugin folder.
     private var dataList: [ActionData] = [] // TODO: finish
     private var actionLines: [ActionLine] = [] // TODO: line object
-    var subCategoryId: String?
+    public var subCategoryId: String?
 
     private var runAction: ((ActionResponse) -> Void)?
-    var onAction: ((ActionResponse) -> Void)? {
+    public var onAction: ((ActionResponse) -> Void)? {
         get { runAction }
         set(value) {
             runAction = value
@@ -36,26 +36,26 @@ class Action {
         self.executionType = executionType
         self.executionCmd = executionCmd
     }
-    func addData(data: ActionData) {
+    public func addData(data: ActionData) {
         dataList.append(data)
     }
-    func addActionLine(actionLine: ActionLine) {
+    public func addActionLine(actionLine: ActionLine) {
         actionLines.append(actionLine)
     }
-    func getActionLines() -> [ActionLine] {
+    public func getActionLines() -> [ActionLine] {
         return actionLines
     }
-    func getData() -> [ActionData] {
+    public func getData() -> [ActionData] {
         return dataList
     }
 }
 
-enum ActionType: String {
+public enum ActionType: String {
     case execute // static
     case communicate // dynamic
 }
 
-enum ExecutionType: String {
+public enum ExecutionType: String {
     case AppleScript
     case Bash
 }

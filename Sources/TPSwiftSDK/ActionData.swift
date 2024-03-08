@@ -7,24 +7,24 @@
 
 import Foundation
 
-class ActionData {
-    var id: String
+public class ActionData {
+    public var id: String
     private var dataType: ActionDataType
-    var type: ActionDataType {
+    public var type: ActionDataType {
         get { dataType }
         set(value) {
             dataType = value
         }
     }
 
-    var valueChoices: [String]? // TODO: test and see if numbers work
-    var extensions: [String]?
+    public var valueChoices: [String]? // TODO: test and see if numbers work
+    public var extensions: [String]?
     /* This is a collection of extensions allowed to open. This only has effect when used with the file type.
      eg: "extensions": ["*.jpg","*.png",]
      */
-    var allowDecimal: Bool?
-    var minValue: Int?
-    var maxValue: Int?
+    public var allowDecimal: Bool?
+    public var minValue: Int?
+    public var maxValue: Int?
 
     init(id: String, type: ActionDataType, valueChoices: [String]? = nil, extensions: [String]? = nil, allowDecimal: Bool? = nil, minValue: Int? = nil, maxValue: Int? = nil) {
         self.id = id
@@ -37,7 +37,7 @@ class ActionData {
     }
 }
 
-enum ActionDataType {
+public enum ActionDataType {
     case text(String)
     case number(Int)
     case bool(Bool)
@@ -46,7 +46,7 @@ enum ActionDataType {
     case folder(String)
     case color(String)
 
-    func getTypeAndValue() -> (type: String, defaultValue: Any) {
+    public func getTypeAndValue() -> (type: String, defaultValue: Any) {
         switch self {
         case .text(let value):
             return ("text", value)
