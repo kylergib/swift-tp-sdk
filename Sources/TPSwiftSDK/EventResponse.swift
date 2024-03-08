@@ -15,7 +15,7 @@ public class EventResponse {
     public var dataId: String
     public var value: Any
     
-    init(type: String, pluginId: String, actionId: String,
+    public init(type: String, pluginId: String, actionId: String,
          dataId: String, value: Any) {
         self.type = type
         self.pluginId = pluginId

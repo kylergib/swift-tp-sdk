@@ -22,8 +22,8 @@ public class Connector {
                 runAction = value
             }
         }
-    // subcategory
-    init(id: String, name: String, format: String,
+    
+    public init(id: String, name: String, format: String,
          category: Category, data: ConnectorData) {
         self.id = id
         self.name = name

@@ -28,7 +28,7 @@ public class Action {
         }
     }
 
-    init(id: String, name: String, type: ActionType, category: Category, executionType: ExecutionType? = nil, executionCmd: String? = nil) {
+    public init(id: String, name: String, type: ActionType, category: Category, executionType: ExecutionType? = nil, executionCmd: String? = nil) {
         self.id = id
         self.name = name
         self.type = type

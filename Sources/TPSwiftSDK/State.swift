@@ -16,7 +16,7 @@ public class State {
     public var valueChoices: [String]
     public var parentGroup: String?
     public var category: Category
-    init(id: String, type: StateType, description: String, category: Category,
+    public init(id: String, type: StateType, description: String, category: Category,
          defaultValue: String = "", valueChoices: [String] = []) {
         self.id = id
         self.type = type

@@ -14,7 +14,7 @@ public class Info {
     public var pluginVersion: Int
     public var status: String
     
-    init(sdkVersion: Int, tpVersionString: String, tpVersionCode: Int, pluginVersion: Int, status: String) {
+    public init(sdkVersion: Int, tpVersionString: String, tpVersionCode: Int, pluginVersion: Int, status: String) {
         self.sdkVersion = sdkVersion
         self.tpVersionString = tpVersionString
         self.tpVersionCode = tpVersionCode

@@ -14,7 +14,7 @@ public class ToolTip {
     public var body: String
     public var docUrl: String?
     
-    init(body: String) {
+    public init(body: String) {
         self.body = body
     }
 }

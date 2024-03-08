@@ -14,7 +14,7 @@ public class ActionResponse {
     public var data: [ActionResponseData]?
     public var value: Any?
 
-    init(type: String? = nil, pluginId: String? = nil, actionId: String? = nil,
+    public init(type: String? = nil, pluginId: String? = nil, actionId: String? = nil,
          data: [ActionResponseData]? = nil, value: Any? = nil)
     {
         self.type = type
@@ -29,7 +29,7 @@ public class ActionResponseData {
     public var id: String?
     public var value: Any?
     
-    init(id: String?, value: Any?) {
+    public init(id: String?, value: Any?) {
         self.id = id
         self.value = value
     }

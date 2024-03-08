@@ -62,7 +62,7 @@ public class TPClient {
 //        currentHandler?.messageReceivedCallback = messageReceived
 //    }
 
-    init(address: String = "127.0.0.1", port: Int = 12136) {
+    public init(address: String = "127.0.0.1", port: Int = 12136) {
         currentHandler = MessageHandler()
         self.address = address
         self.port = port

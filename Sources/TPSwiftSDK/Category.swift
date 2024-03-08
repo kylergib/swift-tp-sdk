@@ -13,7 +13,7 @@ public class Category {
     public var imagePath: String?
 
 
-    init(id: String, name: String, imagePath: String? = nil) {
+    public init(id: String, name: String, imagePath: String? = nil) {
         self.id = id
         self.name = name
         self.imagePath = imagePath

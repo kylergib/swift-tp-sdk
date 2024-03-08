@@ -12,7 +12,7 @@ public class SettingResponse {
     public var name: String
     public var value: Any
     
-    init(name: String, value: Any) {
+    public init(name: String, value: Any) {
         self.name = name
         self.value = value
     }

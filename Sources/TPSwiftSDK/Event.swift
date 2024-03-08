@@ -25,8 +25,7 @@ public class Event {
         }
     }
 
-    // subcategory
-    init(id: String, name: String, format: String, category: Category,
+    public init(id: String, name: String, format: String, category: Category,
          valueType: EventValueType, valueStateId: String, valueChoices: [String]? = nil)
     {
         self.id = id

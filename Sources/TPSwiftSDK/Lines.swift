@@ -12,7 +12,7 @@ public class Lines {
     public var actionLine: [ActionLine]? //each action line is different language, default is english
     //    var onHold: []
     
-    init() {
+    public init() {
         
     }
 }

@@ -25,7 +25,7 @@ public class Setting {
     public var readOnly: Bool?
     public var toolTip: ToolTip? // is an object in TP
 
-    init(name: String, type: SettingType, valueDefault: String? = nil, maxLength: Int? = nil, isPassword: Bool? = nil, minValue: Int? = nil, maxValue: Int? = nil, readOnly: Bool? = nil, toolTip: ToolTip? = nil) {
+    public init(name: String, type: SettingType, valueDefault: String? = nil, maxLength: Int? = nil, isPassword: Bool? = nil, minValue: Int? = nil, maxValue: Int? = nil, readOnly: Bool? = nil, toolTip: ToolTip? = nil) {
         self.name = name
         self.settingType = type
         self.valueDefault = valueDefault

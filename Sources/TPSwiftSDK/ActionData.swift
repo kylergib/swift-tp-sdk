@@ -26,7 +26,7 @@ public class ActionData {
     public var minValue: Int?
     public var maxValue: Int?
 
-    init(id: String, type: ActionDataType, valueChoices: [String]? = nil, extensions: [String]? = nil, allowDecimal: Bool? = nil, minValue: Int? = nil, maxValue: Int? = nil) {
+    public init(id: String, type: ActionDataType, valueChoices: [String]? = nil, extensions: [String]? = nil, allowDecimal: Bool? = nil, minValue: Int? = nil, maxValue: Int? = nil) {
         self.id = id
         self.dataType = type
         self.valueChoices = valueChoices

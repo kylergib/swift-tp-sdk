@@ -13,7 +13,7 @@ public class Configuration {
     public var colorLight: String?
     public var parentCategory: ParentCategory?
     
-    init(colorDark: String? = nil, colorLight: String? = nil, parentCategory: ParentCategory? = nil) {
+    public init(colorDark: String? = nil, colorLight: String? = nil, parentCategory: ParentCategory? = nil) {
         self.colorDark = colorDark
         self.colorLight = colorLight
         self.parentCategory = parentCategory
