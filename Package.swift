@@ -4,20 +4,28 @@
 import PackageDescription
 
 let package = Package(
-    name: "TPSwiftSDK",
+    name: "swift-tp",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "TPSwiftSDK",
             targets: ["TPSwiftSDK"]),
     ],
+    dependencies: [
+        // Dependencies declare other packages that this package depends on.
+        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: Version("2.62.0")),
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "TPSwiftSDK"),
+            name: "TPSwiftSDK",
+            dependencies: [
+                .product(name: "NIOCore", package: "swift-nio"), // Specify NIOCore here
+                .product(name: "NIOPosix", package: "swift-nio"),
+            ]),
         .testTarget(
             name: "TPSwiftSDKTests",
             dependencies: ["TPSwiftSDK"]),
-    ]
-)
+    ])
