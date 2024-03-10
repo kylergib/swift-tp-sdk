@@ -140,7 +140,7 @@ public class TPClient {
                     print(json)
                     let instanceId = json["instanceId"] as? String
                     let type = json["type"] as? String
-                    let values = json["data"] as? [[String: Any]]
+                    let values = json["values"] as? [[String: Any]]
                     let pluginId = json["pluginId"] as? String
                     let value = json["value"]
                     let actionId = json["actionId"] as? String
