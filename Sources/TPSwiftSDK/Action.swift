@@ -48,6 +48,17 @@ public class Action {
     public func getData() -> [ActionData] {
         return dataList
     }
+    public static func updateActionList(id: String, value: [String], instanceId: String) {
+        if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
+            print("Cannot send update, because tpClient is nul or plugin is nil")
+            return
+        }
+        let message = """
+        {"type":"choiceUpdate","id":"\(id)","instanceId":"\(instanceId)","value":\(value)}
+        """
+        
+        TPClient.currentHandler?.sendMessage(message: message + "\n")
+    }
 }
 
 public enum ActionType: String {

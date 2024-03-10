@@ -36,6 +36,17 @@ public class Setting {
         self.readOnly = readOnly
         self.toolTip = toolTip
     }
+    public static func updateSetting(settingName:String, value: String) {
+        if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
+            print("Cannot send update, because tpClient is nul or plugin is nil")
+            return
+        }
+        let message = """
+        {"type":"settingUpdate","name":"\(settingName)","value":\(value)}
+        """
+
+        TPClient.currentHandler?.sendMessage(message: message + "\n")
+    }
 }
 
 public enum SettingType: String {

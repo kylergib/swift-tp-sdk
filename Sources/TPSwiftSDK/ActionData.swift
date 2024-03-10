@@ -35,6 +35,23 @@ public class ActionData {
         self.minValue = minValue
         self.maxValue = maxValue
     }
+    public static func updateActionData(actionDataId: String, data: ActionData) {
+        if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
+            print("Cannot send update, because tpClient is nul or plugin is nil")
+            return
+        }
+        var dict = [String: Any]()
+        dict["id"] = data.id
+        let result = data.type.getTypeAndValue()
+        dict["type"] = data.type.getTypeAndValue().type
+        dict["minValue"] = data.minValue
+        dict["maxValue"] = data.maxValue
+        let message = """
+        {"type":"updateActionData","instanceId":"\(actionDataId)","data":\(dict))}
+        """
+
+        TPClient.currentHandler?.sendMessage(message: message + "\n")
+    }
 }
 
 public enum ActionDataType {
