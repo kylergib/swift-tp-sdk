@@ -137,6 +137,7 @@ public class TPClient {
                     connector?.onConnectorChange?(Response(type: type, pluginId: pluginId, id: connectorId, data: dataList, value: value))
                 case "listChange":
                     print("received list change")
+                    print(json)
                     let instanceId = json["instanceId"] as? String
                     let type = json["type"] as? String
                     let values = json["data"] as? [[String: Any]]
