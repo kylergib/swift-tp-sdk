@@ -17,8 +17,8 @@ public class Event {
     public var valueType: EventValueType
     public var valueStateId: String
     public var subCategory: Category?
-    private var runEvent: ((ActionResponse) -> Void)?
-    public var onEvent: ((ActionResponse) -> Void)? {
+    private var runEvent: ((Response) -> Void)?
+    public var onEvent: ((Response) -> Void)? {
         get { runEvent }
         set(value) {
             runEvent = value

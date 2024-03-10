@@ -12,7 +12,7 @@ public class Connector {
     public var name: String
     public var format: String
     public var category: Category
-    public var data: ConnectorData?
+    private var dataList: [ConnectorData]
     public var subCategory: Category?
     private var connectorChange: ((Response) -> Void)?
     public var onConnectorChange: ((Response) -> Void)? {
@@ -23,12 +23,18 @@ public class Connector {
     }
     
     public init(id: String, name: String, format: String,
-         category: Category, data: ConnectorData?) {
+         category: Category, dataList: [ConnectorData] = []) {
         self.id = id
         self.name = name
         self.format = format
         self.category = category
-        self.data = data
+        self.dataList = dataList
+    }
+    public func addData(data: ConnectorData) {
+        dataList.append(data)
+    }
+    public func getDataList() -> [ConnectorData] {
+        return dataList
     }
 }
 

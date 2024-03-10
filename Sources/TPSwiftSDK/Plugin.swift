@@ -271,20 +271,24 @@ public class Plugin {
         connectorDict["id"] = connector.id
         connectorDict["name"] = connector.name
         connectorDict["format"] = connector.format
-        connectorDict["data"] = [buildConnectorData(data: connector.data)]
+        connectorDict["data"] = [buildConnectorData(connectorDatas: connector.getDataList())]
         connectorDict["subCategory"] = connector.subCategory
         return connectorDict
     }
 
-    private func buildConnectorData(data: ConnectorData) -> [String: Any] {
+    private func buildConnectorData(connectorDatas: [ConnectorData]) -> [[String: Any]] {
         // TODO: connectors can have moe than one data.
-        var dataDict = [String: Any]()
-        dataDict["id"] = data.id
-        dataDict["label"] = data.label
-        dataDict["type"] = data.dataType.rawValue
-        dataDict["default"] = data.defaultValue
-        dataDict["valueChoice"] = data.valueChoices
-        return dataDict
+        var list = [[String: Any]]()
+        connectorDatas.forEach { data in
+            var dataDict = [String: Any]()
+            dataDict["id"] = data.id
+            dataDict["label"] = data.label
+            dataDict["type"] = data.dataType.rawValue
+            dataDict["default"] = data.defaultValue
+            dataDict["valueChoice"] = data.valueChoices
+            list.append(dataDict)
+        }
+        return list
     }
 
     private func buildState(state: State) -> [String: Any] {
