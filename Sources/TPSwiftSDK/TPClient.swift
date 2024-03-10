@@ -137,7 +137,6 @@ public class TPClient {
                     connector?.onConnectorChange?(Response(type: type, pluginId: pluginId, id: connectorId, data: dataList, value: value))
                 case "listChange":
                     print("received list change")
-                    print(json)
                     let instanceId = json["instanceId"] as? String
                     let type = json["type"] as? String
                     let values = json["values"] as? [[String: Any]]
@@ -153,7 +152,16 @@ public class TPClient {
                     }
                     let action = self.plugin?.getActionById(actionId: actionId!)
                     action?.onListChange?(ListChangeResponse(instanceId: instanceId!, pluginId: pluginId!, value: value, values: dataList, type: type!, actionId: actionId!, listId: listId!))
-
+                case "notificationOptionClicked":
+                    print("received notification click")
+                    let notificationId = json["notificationId"] as? String
+                    let type = json["type"] as? String
+                    let optionId = json["optionId"] as? String
+                    if notificationId == nil {
+                        return
+                    }
+                    let notification = self.plugin?.getNotificationById(notificationId: notificationId!)
+                    notification?.onNotificationClicked?(NotificationResponse(type: type!, notificationId: notificationId!, optionId: optionId!))
                 default:
                     print("Could not find match")
                     print(json)
