@@ -36,9 +36,7 @@ public class Connector {
     public func getDataList() -> [ConnectorData] {
         return dataList
     }
-    public func updateConnectorData(value: Any) {
-        
-    }
+    
 }
 
 
