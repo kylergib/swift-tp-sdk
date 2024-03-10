@@ -169,7 +169,7 @@ public class TPClient {
             .channelOption(ChannelOptions.socketOption(.tcp_nodelay), value: 1) // disables algo where it will try to send immediately rather than split into chunks, may still split into chunks, will need to test
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
-                if self.currentHandler == nil {
+                if TPClient.currentHandler == nil {
                     TPClient.currentHandler = MessageHandler()
                     TPClient.currentHandler?.pluginId = self.plugin?.pluginId
                     TPClient.currentHandler?.messageReceivedCallback = self.messageReceived
