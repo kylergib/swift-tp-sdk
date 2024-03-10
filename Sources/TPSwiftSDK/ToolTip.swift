@@ -13,7 +13,7 @@ public class ToolTip {
     public var title: String?
     public var body: String
     public var docUrl: String?
-    
+     
     public init(body: String) {
         self.body = body
     }
