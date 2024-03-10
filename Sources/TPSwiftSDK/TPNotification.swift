@@ -49,7 +49,10 @@ public class TPNotification {
         do {
             // Convert the dictionary into JSON data
             let jsonData = try JSONSerialization.data(withJSONObject: rootDict)
-            TPClient.currentHandler?.sendMessage(message: jsonData.base64EncodedString() + "\n")
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+            }
+           
         } catch {
             print(error)
         }
