@@ -32,6 +32,14 @@ public class Plugin {
     public var states = [String: State]() // TODO: replace with state class
     public var subCategories: [String: Category]? // TODO: would this be an array of catogories? maybe child class of category
     public var notifications = [String: TPNotification]()
+    
+    private var settingsChange: (([SettingResponse]) -> Void)?
+    public var onSettingsChange: (([SettingResponse]) -> Void)? {
+        get { settingsChange }
+        set(value) {
+            settingsChange = value
+        }
+    }
 
     public init(api: ApiVersion, version: Int, name: String, pluginId: String) {
         self.api = api
