@@ -19,17 +19,17 @@ public class Plugin {
     public var pluginStartCmdWindows: String?
     public var pluginStartCmdMac: String?
     public var pluginStartCmdLinux: String?
-    private var categories = [String: Category]()
-    private var settings = [String: Setting]()
+    var categories = [String: Category]()
+    var settings = [String: Setting]()
 
 //    var actionCategories = [String: Category]()
-    private var actions = [String: Action]() // TODO: replace with action class
+    var actions = [String: Action]() // TODO: replace with action class
 //    var eventCategories = [String: Category]()
-    private var events = [String: Event]() // TODO: replace with events class
+    var events = [String: Event]() // TODO: replace with events class
 //    var connectorCategories = [String: Category]()
-    private var connectors = [String: Connector]() // TODO: replace with connector class
+    var connectors = [String: Connector]() // TODO: replace with connector class
 //    var stateCategories = [String: Category]()
-    private var states = [String: State]() // TODO: replace with state class
+    var states = [String: State]() // TODO: replace with state class
     public var subCategories: [String: Category]? // TODO: would this be an array of catogories? maybe child class of category
 
     public init(api: ApiVersion, version: Int, name: String, pluginId: String) {
