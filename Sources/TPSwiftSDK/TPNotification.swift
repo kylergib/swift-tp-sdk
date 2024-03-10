@@ -45,7 +45,7 @@ public class TPNotification {
             dict["title"] = option.title
             optionList.append(dict)
         }
-        rootDict["msg"] = optionList
+        rootDict["options"] = optionList
         do {
             // Convert the dictionary into JSON data
             let jsonData = try JSONSerialization.data(withJSONObject: rootDict)
