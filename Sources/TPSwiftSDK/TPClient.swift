@@ -25,6 +25,7 @@ public class TPClient {
         get { connected }
         set(value) {
             connected = value
+            TPClient.currentHandler?.connectedCallback = value
         }
     }
 

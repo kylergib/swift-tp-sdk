@@ -48,7 +48,7 @@ public class Action {
     public func getData() -> [ActionData] {
         return dataList
     }
-    public static func updateActionList(id: String, value: [String], instanceId: String) {
+    public static func updateActionList(actionDataId: String, value: [String], actionId: String) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
