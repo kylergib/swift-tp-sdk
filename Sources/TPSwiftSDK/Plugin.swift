@@ -271,7 +271,7 @@ public class Plugin {
         connectorDict["id"] = connector.id
         connectorDict["name"] = connector.name
         connectorDict["format"] = connector.format
-        connectorDict["data"] = [buildConnectorData(connectorDatas: connector.getDataList())]
+        connectorDict["data"] = buildConnectorData(connectorDatas: connector.getDataList())
         connectorDict["subCategory"] = connector.subCategory
         return connectorDict
     }
