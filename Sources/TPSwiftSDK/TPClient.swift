@@ -50,10 +50,9 @@ public class TPClient {
         }
     }
     public func updateConnectorData(connectorId: String, value: Int) {
+        if (plugin == nil) { return }
         let message = """
-        {"type":"connectorUpdate",
-          "connectorId":"\(connectorId)",
-          "value":\(value),}
+        {"type":"connectorUpdate","connectorId":"pc_\(plugin!.pluginId)_\(connectorId)","value":\(value)}
         """
 
         currentHandler?.sendMessage(message: message + "\n")
