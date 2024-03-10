@@ -27,6 +27,13 @@ public class Action {
             runAction = value
         }
     }
+    private var listChange: ((ListChangeResponse) -> Void)?
+    public var onListChange: ((ListChangeResponse) -> Void)? {
+        get { listChange }
+        set(value) {
+            listChange = value
+        }
+    }
 
     public init(id: String, name: String, type: ActionType, category: Category, executionType: ExecutionType? = nil, executionCmd: String? = nil) {
         self.id = id
