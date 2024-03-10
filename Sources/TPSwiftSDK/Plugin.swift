@@ -66,7 +66,7 @@ public class Plugin {
         return actions[actionId]
     }
 
-    public func buildEntry() {
+    public func buildEntry(folderPath: String, fileName: String) {
 //        print("starting build")
         var rootDict = [String: Any]()
         rootDict["api"] = api.rawValue
@@ -86,11 +86,31 @@ public class Plugin {
             let jsonData = try JSONSerialization.data(withJSONObject: rootDict, options: .prettyPrinted)
 
             // Specify the file path and name
-            let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("entry.tp")
+//            let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("entry.tp")
+            let fileManager = FileManager.default
+//            let folderPath = "/path/to/your/desired/folder" // Replace with your desired path
 
+            // Check if the folder exists
+            if !fileManager.fileExists(atPath: folderPath) {
+                do {
+                    // Attempt to create the folder
+                    try fileManager.createDirectory(atPath: folderPath, withIntermediateDirectories: true, attributes: nil)
+                    print("Folder created at \(folderPath)")
+                } catch {
+                    // Handle any errors
+                    print("Error creating folder: \(error)")
+                }
+            } else {
+                print("Folder already exists.")
+            }
+            let url = URL(string: "\(folderPath)/\(fileName)")
+            if (url == nil) {
+                print("Error creating folder/file")
+                return
+            }
             // Write the JSON data to the file
-            try jsonData.write(to: fileURL, options: .atomic)
-            print("File saved: \(fileURL)")
+            try jsonData.write(to: url!, options: .atomic)
+            print("File saved: \(url!)")
         } catch {
             print("Error serializing JSON: \(error)")
         }
