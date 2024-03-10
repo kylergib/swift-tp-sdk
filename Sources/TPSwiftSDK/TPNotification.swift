@@ -33,6 +33,11 @@ public class TPNotification {
             print("atleast 1 option is required")
             return
         }
+        var rootDict = [String: Any]()
+        rootDict["type"] = "showNotification"
+        rootDict["notificationId"] = notificationId
+        rootDict["title"] = title
+        rootDict["msg"] = message
         var optionList = [[String: Any]]()
         options.forEach { option in
             var dict = [String: Any]()
@@ -40,12 +45,16 @@ public class TPNotification {
             dict["title"] = option.title
             optionList.append(dict)
         }
+        rootDict["msg"] = optionList
+        do {
+            // Convert the dictionary into JSON data
+            let jsonData = try JSONSerialization.data(withJSONObject: rootDict)
+            TPClient.currentHandler?.sendMessage(message: jsonData.base64EncodedString() + "\n")
+        } catch {
+            print(error)
+        }
         
-        let message = """
-        {"type":"showNotification","notificationId":"\(notificationId)","title":"\(title)","msg":"\(message)","options": \(optionList)}
-        """
         
-        TPClient.currentHandler?.sendMessage(message: message + "\n")
     }
     
     
