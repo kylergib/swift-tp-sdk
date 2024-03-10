@@ -19,21 +19,13 @@ public class TPClient {
     public var plugin: Plugin?
 
     private var messageReceived: (([String: Any]) -> Void)?
-
+    // TODO: add callback if it was unsuccessful connecting to TP and try again
     private var connected: ((Bool) -> Void)?
     public var onConnection: ((Bool) -> Void)? {
         get { connected }
         set(value) {
             connected = value
             TPClient.currentHandler?.connectedCallback = value
-        }
-    }
-
-    private var settingsChange: (([SettingResponse]) -> Void)?
-    public var onSettingsChange: (([SettingResponse]) -> Void)? {
-        get { settingsChange }
-        set(value) {
-            settingsChange = value
         }
     }
 
@@ -175,14 +167,14 @@ public class TPClient {
         TPClient.tpClient = self
     }
 
-    public func handleSettings(settings: [[String: Any]]) {
+    func handleSettings(settings: [[String: Any]]) {
         var settingList: [SettingResponse] = []
         settings.forEach { setting in
             setting.forEach { (name: String, value: Any) in
                 settingList.append(SettingResponse(name: name, value: value))
             }
         }
-        onSettingsChange?(settingList)
+        TPClient.tpClient?.plugin?.onSettingsChange?(settingList)
     }
 
     public func start() {
@@ -221,8 +213,8 @@ public class TPClient {
 }
 
 class MessageHandler: ChannelInboundHandler {
-    public typealias InboundIn = ByteBuffer
-    public typealias OutboundOut = ByteBuffer
+    typealias InboundIn = ByteBuffer
+    typealias OutboundOut = ByteBuffer
     public var channel: Channel?
     public var pluginId: String?
 

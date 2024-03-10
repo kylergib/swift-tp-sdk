@@ -60,9 +60,6 @@ public class Action {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-//        let message = """
-//        {"type":"choiceUpdate","id":"\(actionDataId)","instanceId":"\(actionId)","value":\(value)}
-//        """
         var dict = [String: Any]()
         dict["type"] = "choiceUpdate"
         dict["id"] = actionDataId
