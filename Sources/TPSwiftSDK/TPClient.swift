@@ -205,7 +205,8 @@ class MessageHandler: ChannelInboundHandler {
 
     public func channelInactive(context: ChannelHandlerContext) {
         print("Disconnected from \(String(describing: context.remoteAddress))")
-        connectedCallback?(false)
+//        connectedCallback?(false)
+        TPClient.tpClient?.onConnection?(false)
     }
 
     public func channelActive(context: ChannelHandlerContext) {
@@ -219,7 +220,7 @@ class MessageHandler: ChannelInboundHandler {
         """
 
         sendMessage(message: pair + "\n")
-        connectedCallback?(true)
+        TPClient.tpClient?.onConnection?(true)
     }
 
     public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
