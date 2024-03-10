@@ -12,19 +12,18 @@ public class Connector {
     public var name: String
     public var format: String
     public var category: Category
-    public var data: ConnectorData
+    public var data: ConnectorData?
     public var subCategory: Category?
-    
-    private var runAction: ((ActionResponse) -> Void)?
-        var onAction: ((ActionResponse) -> Void)? {
-            get { runAction }
-            set(value) {
-                runAction = value
-            }
+    private var connectorChange: ((Response) -> Void)?
+    public var onConnectorChange: ((Response) -> Void)? {
+        get { connectorChange }
+        set(value) {
+            connectorChange = value
         }
+    }
     
     public init(id: String, name: String, format: String,
-         category: Category, data: ConnectorData) {
+         category: Category, data: ConnectorData?) {
         self.id = id
         self.name = name
         self.format = format

@@ -9,16 +9,17 @@ import Foundation
 
 public class ConnectorData {
     public var id: String
-    public var dataType: ConnectorDataType = ConnectorDataType.choice
+    public var dataType: ConnectorDataType
     public var label: String
     public var defaultValue: String
     public var valueChoices: [String]
     
     // TODO: add connector callback
 
-    public init(id: String, valueChoices: [String] = [], defaultValue: String = "") {
+    public init(id: String, dataType: ConnectorDataType, valueChoices: [String] = [], defaultValue: String = "") {
         self.id = id
         self.label = id
+        self.dataType = dataType
         self.valueChoices = valueChoices
         self.defaultValue = defaultValue
     }
@@ -26,4 +27,6 @@ public class ConnectorData {
 
 public enum ConnectorDataType: String {
     case choice
+    case text
+    case number
 }

@@ -20,8 +20,8 @@ public class Action {
     private var actionLines: [ActionLine] = [] // TODO: line object
     public var subCategoryId: String?
 
-    private var runAction: ((ActionResponse) -> Void)?
-    public var onAction: ((ActionResponse) -> Void)? {
+    private var runAction: ((Response) -> Void)?
+    public var onAction: ((Response) -> Void)? {
         get { runAction }
         set(value) {
             runAction = value

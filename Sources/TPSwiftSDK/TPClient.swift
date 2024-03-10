@@ -75,8 +75,6 @@ public class TPClient {
         self.address = address
         self.port = port
         messageReceived = { json in
-            print("message recieved: ")
-            print(json)
             if let type = json["type"] as? String {
                 switch type {
                 case "info":
@@ -106,18 +104,37 @@ public class TPClient {
                     if actionId == nil {
                         return
                     }
-                    var dataList: [ActionResponseData] = []
+                    var dataList: [ResponseData] = []
                     data?.forEach { temp in
                         let id = temp["id"] as? String
                         let value = temp["value"]
-                        dataList.append(ActionResponseData(id: id, value: value))
+                        dataList.append(ResponseData(id: id, value: value))
                     }
                     let action = self.plugin?.getActionById(actionId: actionId!)
-                    action?.onAction?(ActionResponse(type: type, pluginId: pluginId, actionId: actionId, data: dataList))
+                    action?.onAction?(Response(type: type, pluginId: pluginId, id: actionId, data: dataList))
                 case "closePlugin":
                     self.onCloseRequest?()
+                case "connectorChange":
+                    print("received connector change")
+                    let connectorId = json["connectorId"] as? String
+                    let type = json["type"] as? String
+                    let data = json["data"] as? [[String: Any]]
+                    let pluginId = json["pluginId"] as? String
+
+                    if connectorId == nil {
+                        return
+                    }
+                    var dataList: [ResponseData] = []
+                    data?.forEach { temp in
+                        let id = temp["id"] as? String
+                        let value = temp["value"]
+                        dataList.append(ResponseData(id: id, value: value))
+                    }
+                    let connector = self.plugin?.getConnectorById(connectorId: connectorId!)
+                    connector?.onConnectorChange?(Response(type: type, pluginId: pluginId, id: connectorId, data: dataList))
                 default:
                     print("Could not find match")
+                    print(json)
                 }
             } else {
                 print("does not have type")
@@ -168,8 +185,8 @@ public class TPClient {
         }
     }
 
-    public func actionReceived() {}
-    public func buildEntry() {}
+//    public func actionReceived() {}
+//    public func buildEntry() {}
 }
 
 class MessageHandler: ChannelInboundHandler {

@@ -7,25 +7,25 @@
 
 import Foundation
 
-public class ActionResponse {
+public class Response {
     public var type: String?
     public var pluginId: String?
-    public var actionId: String?
-    public var data: [ActionResponseData]?
+    public var id: String?
+    public var data: [ResponseData]?
     public var value: Any?
 
-    public init(type: String? = nil, pluginId: String? = nil, actionId: String? = nil,
-         data: [ActionResponseData]? = nil, value: Any? = nil)
+    public init(type: String? = nil, pluginId: String? = nil, id: String? = nil,
+         data: [ResponseData]? = nil, value: Any? = nil)
     {
         self.type = type
         self.pluginId = pluginId
-        self.actionId = actionId
+        self.id = id
         self.data = data
         self.value = value
     }
 }
 
-public class ActionResponseData {
+public class ResponseData {
     public var id: String?
     public var value: Any?
     

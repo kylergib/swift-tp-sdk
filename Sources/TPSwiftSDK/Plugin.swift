@@ -66,6 +66,9 @@ public class Plugin {
     public func getActionById(actionId: String) -> Action? {
         return actions[actionId]
     }
+    public func getConnectorById(connectorId: String) -> Connector? {
+        return connectors[connectorId]
+    }
 
     public func buildEntry(folderURL: URL, fileName: String) {
 //        print("starting build")
