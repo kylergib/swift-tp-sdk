@@ -12,7 +12,8 @@ import NIOPosix
 
 public class TPClient {
     private var channel: Channel?
-    private var currentHandler: MessageHandler?
+    static var currentHandler: MessageHandler?
+    static var tpClient: TPClient?
     public var address: String
     public var port: Int
     public var plugin: Plugin?
@@ -49,14 +50,7 @@ public class TPClient {
             closeRequest = value
         }
     }
-    public func updateConnectorData(connectorId: String, value: Int) {
-        if (plugin == nil) { return }
-        let message = """
-        {"type":"connectorUpdate","connectorId":"pc_\(plugin!.pluginId)_\(connectorId)","value":\(value)}
-        """
-
-        currentHandler?.sendMessage(message: message + "\n")
-    }
+    
     
 
 //    init() {
@@ -79,7 +73,7 @@ public class TPClient {
 //    }
 
     public init(address: String = "127.0.0.1", port: Int = 12136) {
-        currentHandler = MessageHandler()
+        TPClient.currentHandler = MessageHandler()
         self.address = address
         self.port = port
         messageReceived = { json in
@@ -150,7 +144,8 @@ public class TPClient {
                 print(json)
             }
         }
-        currentHandler?.messageReceivedCallback = messageReceived
+        TPClient.currentHandler?.messageReceivedCallback = messageReceived
+        TPClient.tpClient = self
     }
 
     public func handleSettings(settings: [[String: Any]]) {
@@ -168,18 +163,18 @@ public class TPClient {
             print("Cannot connect to Touch Portal without an Entry class")
             return
         }
-        currentHandler?.pluginId = plugin?.pluginId
+        TPClient.currentHandler?.pluginId = plugin?.pluginId
         let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         let bootstrap = ClientBootstrap(group: group)
             .channelOption(ChannelOptions.socketOption(.tcp_nodelay), value: 1) // disables algo where it will try to send immediately rather than split into chunks, may still split into chunks, will need to test
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
                 if self.currentHandler == nil {
-                    self.currentHandler = MessageHandler()
-                    self.currentHandler?.pluginId = self.plugin?.pluginId
-                    self.currentHandler?.messageReceivedCallback = self.messageReceived
+                    TPClient.currentHandler = MessageHandler()
+                    TPClient.currentHandler?.pluginId = self.plugin?.pluginId
+                    TPClient.currentHandler?.messageReceivedCallback = self.messageReceived
                 }
-                return channel.pipeline.addHandler(self.currentHandler!)
+                return channel.pipeline.addHandler(TPClient.currentHandler!)
             }
 
         defer {

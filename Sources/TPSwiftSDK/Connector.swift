@@ -36,6 +36,17 @@ public class Connector {
     public func getDataList() -> [ConnectorData] {
         return dataList
     }
+    public static func updateConnectorData(connectorId: String, value: Int) {
+        if (TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil) {
+            print("Cannot send update, because tpClient is nul or plugin is nil")
+            return
+        }
+        let message = """
+        {"type":"connectorUpdate","connectorId":"pc_\(TPClient.tpClient!.plugin!.pluginId)_\(connectorId)","value":\(value)}
+        """
+
+        TPClient.currentHandler?.sendMessage(message: message + "\n")
+    }
     
 }
 
