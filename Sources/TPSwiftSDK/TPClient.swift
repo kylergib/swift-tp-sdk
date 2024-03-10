@@ -42,6 +42,14 @@ public class TPClient {
             info = value
         }
     }
+    private var closeRequest: (() -> Void)?
+    public var onCloseRequest: (() -> Void)? {
+        get { closeRequest }
+        set(value) {
+            closeRequest = value
+        }
+    }
+    
 
 //    init() {
 //        currentHandler = MessageHandler()
@@ -106,7 +114,8 @@ public class TPClient {
                     }
                     let action = self.plugin?.getActionById(actionId: actionId!)
                     action?.onAction?(ActionResponse(type: type, pluginId: pluginId, actionId: actionId, data: dataList))
-
+                case "closePlugin":
+                    self.onCloseRequest?()
                 default:
                     print("Could not find match")
                 }
@@ -170,10 +179,11 @@ class MessageHandler: ChannelInboundHandler {
     public var pluginId: String?
 
     public var messageReceivedCallback: (([String: Any]) -> Void)?
+    public var connectedCallback: ((Bool) -> Void)?
 
     public func channelInactive(context: ChannelHandlerContext) {
         print("Disconnected from \(String(describing: context.remoteAddress))")
-//        connectedCallback?(false)
+        connectedCallback?(false)
     }
 
     public func channelActive(context: ChannelHandlerContext) {
@@ -187,6 +197,7 @@ class MessageHandler: ChannelInboundHandler {
         """
 
         sendMessage(message: pair + "\n")
+        connectedCallback?(true)
     }
 
     public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
