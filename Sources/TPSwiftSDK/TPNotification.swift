@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class Notification {
+public class TPNotification {
     public var id: String
     public var title: String
     public var message: String
@@ -26,7 +26,7 @@ public class Notification {
         self.title = title
         self.message = message
         self.options = options
-        Notification.createNotification(notificationId: id, title: title, message: message, options: options)
+        TPNotification.createNotification(notificationId: id, title: title, message: message, options: options)
     }
     public static func createNotification(notificationId: String, title: String, message: String, options: [NotifcationOption]) {
         if options.count < 1 {

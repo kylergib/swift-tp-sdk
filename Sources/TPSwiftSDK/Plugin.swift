@@ -31,7 +31,7 @@ public class Plugin {
 //    public var stateCategories = [String: Category]()
     public var states = [String: State]() // TODO: replace with state class
     public var subCategories: [String: Category]? // TODO: would this be an array of catogories? maybe child class of category
-    public var notifications = [String: Notification]()
+    public var notifications = [String: TPNotification]()
 
     public init(api: ApiVersion, version: Int, name: String, pluginId: String) {
         self.api = api
@@ -59,7 +59,7 @@ public class Plugin {
     public func addConnector(connector: Connector) {
         connectors[connector.id] = connector
     }
-    public func addNotification(notification: Notification) {
+    public func addNotification(notification: TPNotification) {
         notifications[notification.id] = notification
     }
 
@@ -73,7 +73,7 @@ public class Plugin {
     public func getConnectorById(connectorId: String) -> Connector? {
         return connectors[connectorId]
     }
-    public func getNotificationById(notificationId: String) -> Notification? {
+    public func getNotificationById(notificationId: String) -> TPNotification? {
         return notifications[notificationId]
     }
 
