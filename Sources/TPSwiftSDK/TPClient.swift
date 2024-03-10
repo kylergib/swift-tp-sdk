@@ -49,6 +49,15 @@ public class TPClient {
             closeRequest = value
         }
     }
+    func updateConnectorData(connectorId: String, value: Int) {
+        let message = """
+        {"type":"connectorUpdate",
+          "connectorId":"\(connectorId)",
+          "value":\(value),}
+        """
+
+        currentHandler?.sendMessage(message: message + "\n")
+    }
     
 
 //    init() {
