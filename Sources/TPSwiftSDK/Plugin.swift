@@ -66,7 +66,7 @@ public class Plugin {
         return actions[actionId]
     }
 
-    public func buildEntry() {
+    public func buildEntry(fileURL: URL) {
 //        print("starting build")
         var rootDict = [String: Any]()
         rootDict["api"] = api.rawValue
@@ -86,7 +86,7 @@ public class Plugin {
             let jsonData = try JSONSerialization.data(withJSONObject: rootDict, options: .prettyPrinted)
 
             // Specify the file path and name
-            let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("entry.tp")
+//            let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("entry.tp")
 
             // Write the JSON data to the file
             try jsonData.write(to: fileURL, options: .atomic)
