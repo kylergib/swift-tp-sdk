@@ -62,6 +62,7 @@ public class Plugin {
     public func addState(state: State) {
         states[state.id] = state
     }
+
     public func getActionById(actionId: String) -> Action? {
         return actions[actionId]
     }
@@ -85,32 +86,29 @@ public class Plugin {
             // Convert the dictionary into JSON data
             let jsonData = try JSONSerialization.data(withJSONObject: rootDict, options: .prettyPrinted)
 
-            // Specify the file path and name
-//            let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("entry.tp")
-            let fileManager = FileManager.default
-//            let folderPath = "/path/to/your/desired/folder" // Replace with your desired path
+            // Define the folder URL and file name
+//            let folderURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//            let fileName = "entry.tp" // Your file name
 
-            // Check if the folder exists
-            if !fileManager.fileExists(atPath: folderURL.relativePath) {
+            // Create the full file URL by appending the file name to the folder URL
+            let fileURL = folderURL.appendingPathComponent(fileName)
+
+            // Check if the folder exists and create it if it doesn't
+            if !FileManager.default.fileExists(atPath: folderURL.path) {
                 do {
-                    // Attempt to create the folder
-                    try fileManager.createDirectory(atPath: folderURL.relativePath, withIntermediateDirectories: true, attributes: nil)
-                    print("Folder created at \(folderURL.relativePath)")
+                    try FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil)
+                    print("Folder created at \(folderURL.path)")
                 } catch {
-                    // Handle any errors
                     print("Error creating folder: \(error)")
+                    return
                 }
             } else {
                 print("Folder already exists.")
             }
-            let url = URL(string: "\(folderURL.relativePath)/\(fileName)")
-            if (url == nil) {
-                print("Error creating folder/file")
-                return
-            }
+
             // Write the JSON data to the file
-            try jsonData.write(to: url!, options: .atomic)
-            print("File saved: \(url!)")
+            try jsonData.write(to: fileURL, options: .atomic)
+            print("File saved: \(fileURL)")
         } catch {
             print("Error serializing JSON: \(error)")
         }
