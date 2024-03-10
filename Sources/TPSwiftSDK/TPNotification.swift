@@ -46,18 +46,9 @@ public class TPNotification {
             optionList.append(dict)
         }
         rootDict["options"] = optionList
-        do {
-            // Convert the dictionary into JSON data
-            let jsonData = try JSONSerialization.data(withJSONObject: rootDict)
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
-            }
-           
-        } catch {
-            print(error)
+        if let jsonString = Util.dictToJsonString(dict: rootDict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }
-        
-        
     }
     
     

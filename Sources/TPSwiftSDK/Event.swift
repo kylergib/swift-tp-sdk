@@ -36,6 +36,16 @@ public class Event {
         self.valueStateId = valueStateId
         self.valueChoices = valueChoices
     }
+    public static func triggerEvent(eventId: String, states: [String: String]) {
+        
+        var rootDict = [String: Any]()
+        rootDict["type"] = "triggerEvent"
+        rootDict["eventId"] = eventId
+        rootDict["states"] = states
+        if let jsonString = Util.dictToJsonString(dict: rootDict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+        }
+    }
     
     
 }

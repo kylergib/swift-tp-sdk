@@ -31,33 +31,52 @@ public class State {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-        let message = """
-        {"type":"stateUpdate","id":"\(stateId)","value":\(value)}
-        """
-
-        TPClient.currentHandler?.sendMessage(message: message + "\n")
+        var dict = [String: Any]()
+        dict["type"] = "stateUpdate"
+        dict["id"] = stateId
+        dict["value"] = value
+        
+        if let jsonString = Util.dictToJsonString(dict: dict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+        }
     }
     public static func updateStateList(stateId: String, value: [String]) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-        let message = """
-        {"type":"stateListUpdate","id":"\(stateId)","value":\(value)}
-        """
-
-        TPClient.currentHandler?.sendMessage(message: message + "\n")
+        var dict = [String: Any]()
+        dict["type"] = "stateListUpdate"
+        dict["id"] = stateId
+        dict["value"] = value
+        
+        if let jsonString = Util.dictToJsonString(dict: dict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+        }
     }
     public static func updateChoiceList(choiceListId: String, value: [String]) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-        let message = """
-        {"type":"choiceUpdate","id":"\(choiceListId)","value":\(value)}
-        """
-
-        TPClient.currentHandler?.sendMessage(message: message + "\n")
+        
+        var dict = [String: Any]()
+        dict["type"] = "choiceUpdate"
+        dict["id"] = choiceListId
+        dict["value"] = value
+        
+        if let jsonString = Util.dictToJsonString(dict: dict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+        }
+    }
+    public static func removeState(id: String) {
+        var dict = [String: Any]()
+        dict["type"] = "removeState"
+        dict["id"] = id
+        
+        if let jsonString = Util.dictToJsonString(dict: dict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+        }
     }
 }
 

@@ -40,17 +40,20 @@ public class ActionData {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
+        
         var dict = [String: Any]()
-        dict["id"] = data.id
-        let result = data.type.getTypeAndValue()
-        dict["type"] = data.type.getTypeAndValue().type
-        dict["minValue"] = data.minValue
-        dict["maxValue"] = data.maxValue
-        let message = """
-        {"type":"updateActionData","instanceId":"\(actionDataId)","data":\(dict))}
-        """
-
-        TPClient.currentHandler?.sendMessage(message: message + "\n")
+        dict["type"] = "updateActionData"
+        dict["instanceId"] = actionDataId
+        var dataDict = [String: Any]()
+        dataDict["id"] = data.id
+        dataDict["type"] = data.type.getTypeAndValue().type
+        dataDict["minValue"] = data.minValue
+        dataDict["maxValue"] = data.maxValue
+        dict["value"] = dataDict
+        
+        if let jsonString = Util.dictToJsonString(dict: dict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+        }
     }
 }
 

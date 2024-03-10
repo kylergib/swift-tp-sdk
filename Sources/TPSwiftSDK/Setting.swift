@@ -41,11 +41,15 @@ public class Setting {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-        let message = """
-        {"type":"settingUpdate","name":"\(settingName)","value":\(value)}
-        """
-
-        TPClient.currentHandler?.sendMessage(message: message + "\n")
+        
+        var dict = [String: Any]()
+        dict["type"] = "settingUpdate"
+        dict["name"] = settingName
+        dict["value"] = value
+        
+        if let jsonString = Util.dictToJsonString(dict: dict) {
+            TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
+        }
     }
 }
 
