@@ -100,7 +100,7 @@ public class TPClient {
                     let type = json["type"] as? String
                     let data = json["data"] as? [[String: Any]]
                     let pluginId = json["pluginId"] as? String
-
+                    let value = json["value"]
                     if actionId == nil {
                         return
                     }
@@ -111,7 +111,7 @@ public class TPClient {
                         dataList.append(ResponseData(id: id, value: value))
                     }
                     let action = self.plugin?.getActionById(actionId: actionId!)
-                    action?.onAction?(Response(type: type, pluginId: pluginId, id: actionId, data: dataList))
+                    action?.onAction?(Response(type: type, pluginId: pluginId, id: actionId, data: dataList, value: value))
                 case "closePlugin":
                     self.onCloseRequest?()
                 case "connectorChange":
@@ -120,6 +120,7 @@ public class TPClient {
                     let type = json["type"] as? String
                     let data = json["data"] as? [[String: Any]]
                     let pluginId = json["pluginId"] as? String
+                    let value = json["value"]
 
                     if connectorId == nil {
                         return
@@ -131,7 +132,7 @@ public class TPClient {
                         dataList.append(ResponseData(id: id, value: value))
                     }
                     let connector = self.plugin?.getConnectorById(connectorId: connectorId!)
-                    connector?.onConnectorChange?(Response(type: type, pluginId: pluginId, id: connectorId, data: dataList))
+                    connector?.onConnectorChange?(Response(type: type, pluginId: pluginId, id: connectorId, data: dataList, value: value))
                 default:
                     print("Could not find match")
                     print(json)
