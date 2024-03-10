@@ -44,6 +44,7 @@ public class TPClient {
             info = value
         }
     }
+
     private var closeRequest: (() -> Void)?
     public var onCloseRequest: (() -> Void)? {
         get { closeRequest }
@@ -51,8 +52,6 @@ public class TPClient {
             closeRequest = value
         }
     }
-    
-    
 
 //    init() {
 //        currentHandler = MessageHandler()
@@ -85,11 +84,11 @@ public class TPClient {
                         self.handleSettings(settings: settings)
                     }
                     if let sdkVersion = json["sdkVersion"] as? Int,
-                    let tpVersionString = json["tpVersionString"] as? String,
-                    let tpVersionCode = json["tpVersionCode"] as? Int,
-                    let pluginVersion = json["pluginVersion"] as? Int,
-                       let status = json["status"] as? String {
-                        
+                       let tpVersionString = json["tpVersionString"] as? String,
+                       let tpVersionCode = json["tpVersionCode"] as? Int,
+                       let pluginVersion = json["pluginVersion"] as? Int,
+                       let status = json["status"] as? String
+                    {
                         self.onInfo?(Info(sdkVersion: sdkVersion, tpVersionString: tpVersionString, tpVersionCode: tpVersionCode, pluginVersion: pluginVersion, status: status))
                     }
                 case "setting":
@@ -138,25 +137,22 @@ public class TPClient {
                     connector?.onConnectorChange?(Response(type: type, pluginId: pluginId, id: connectorId, data: dataList, value: value))
                 case "listChange":
                     print("received list change")
-                    if let instanceId = json["instanceId"] as? String,
-                    let type = json["type"] as? String,
-                    let values = json["data"] as? [[String: Any]],
-                    let pluginId = json["pluginId"] as? String,
-                    let value = json["value"],
-                    let actionId = json["actionId"] as? String,
-                       let listId = json["listId"] as? String {
-                        var dataList: [ResponseData] = []
-                        values.forEach { temp in
-                            let id = temp["id"] as? String
-                            let value = temp["value"]
-                            dataList.append(ResponseData(id: id, value: value))
-                        }
-                        let action = self.plugin?.getActionById(actionId: actionId)
-                        action?.onListChange?(ListChangeResponse(instanceId: instanceId, pluginId: pluginId, value: value, values: dataList, type: type, actionId: actionId, listId: listId))
+                    let instanceId = json["instanceId"] as? String
+                    let type = json["type"] as? String
+                    let values = json["data"] as? [[String: Any]]
+                    let pluginId = json["pluginId"] as? String
+                    let value = json["value"]
+                    let actionId = json["actionId"] as? String
+                    let listId = json["listId"] as? String
+                    var dataList: [ResponseData] = []
+                    values?.forEach { temp in
+                        let id = temp["id"] as? String
+                        let value = temp["value"]
+                        dataList.append(ResponseData(id: id, value: value))
                     }
- 
-                   
-                    
+                    let action = self.plugin?.getActionById(actionId: actionId!)
+                    action?.onListChange?(ListChangeResponse(instanceId: instanceId!, pluginId: pluginId!, value: value, values: dataList, type: type!, actionId: actionId!, listId: listId!))
+
                 default:
                     print("Could not find match")
                     print(json)
