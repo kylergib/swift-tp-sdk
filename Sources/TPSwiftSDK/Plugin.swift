@@ -66,7 +66,7 @@ public class Plugin {
         return actions[actionId]
     }
 
-    public func buildEntry(folderPath: String, fileName: String) {
+    public func buildEntry(folderURL: URL, fileName: String) {
 //        print("starting build")
         var rootDict = [String: Any]()
         rootDict["api"] = api.rawValue
@@ -91,11 +91,11 @@ public class Plugin {
 //            let folderPath = "/path/to/your/desired/folder" // Replace with your desired path
 
             // Check if the folder exists
-            if !fileManager.fileExists(atPath: folderPath) {
+            if !fileManager.fileExists(atPath: folderURL.relativePath) {
                 do {
                     // Attempt to create the folder
-                    try fileManager.createDirectory(atPath: folderPath, withIntermediateDirectories: true, attributes: nil)
-                    print("Folder created at \(folderPath)")
+                    try fileManager.createDirectory(atPath: folderURL.relativePath, withIntermediateDirectories: true, attributes: nil)
+                    print("Folder created at \(folderURL.relativePath)")
                 } catch {
                     // Handle any errors
                     print("Error creating folder: \(error)")
@@ -103,7 +103,7 @@ public class Plugin {
             } else {
                 print("Folder already exists.")
             }
-            let url = URL(string: "\(folderPath)/\(fileName)")
+            let url = URL(string: "\(folderURL.relativePath)/\(fileName)")
             if (url == nil) {
                 print("Error creating folder/file")
                 return
