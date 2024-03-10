@@ -54,7 +54,7 @@ public class Action {
             return
         }
         let message = """
-        {"type":"choiceUpdate","id":"\(id)","instanceId":"\(instanceId)","value":\(value)}
+        {"type":"choiceUpdate","id":"\(actionDataId)","instanceId":"\(actionId)","value":\(value)}
         """
         
         TPClient.currentHandler?.sendMessage(message: message + "\n")
