@@ -2,6 +2,8 @@
 
 This SDK is to create plugins for Touch Portal using swift. It allows you to connect to Touch Portal and create Actions/States/Events/Connectors. Also, I have created a method that will automatically build the entry.tp file for you.
 
+### This SDK is new, so there may be some issues, feel free to open an issue. 
+
 ### Please read [Touch Portal API](https://www.touch-portal.com/api/index.php?section=intro) documentation before hand.
 
 ### Only works with Touch Portal API 7, may not be backwards compatible, but I have not tested.
