@@ -45,6 +45,14 @@ public class TPClient {
         }
     }
 
+    private var timeout: (() -> Void)?
+    public var onTimeout: (() -> Void)? {
+        get { timeout }
+        set(value) {
+            timeout = value
+        }
+    }
+
 //    init() {
 //        currentHandler = MessageHandler()
 //        address = "127.0.0.1" // default is local host, but in touch portal 4 you can go from a separate computer
@@ -106,9 +114,9 @@ public class TPClient {
                     }
                     let action = self.plugin?.getActionById(actionId: actionId!)
                     let response = Response(type: type, pluginId: pluginId, id: actionId, data: dataList, value: value)
-                    if type == "action"  { action?.onAction?(response) }
-                    else if type == "up"  { action?.onUpAction?(response) }
-                    else if type == "down"  { action?.onDownAction?(response) }
+                    if type == "action" { action?.onAction?(response) }
+                    else if type == "up" { action?.onUpAction?(response) }
+                    else if type == "down" { action?.onDownAction?(response) }
                 case "closePlugin":
                     self.onCloseRequest?()
                 case "connectorChange":
@@ -208,6 +216,7 @@ public class TPClient {
             try channel!.closeFuture.wait()
         } catch {
             print("Error: \(error)")
+            timeout?()
         }
     }
 

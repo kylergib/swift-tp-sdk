@@ -151,7 +151,8 @@ public enum ActionDataType {
     case color(String)
 
 }
-*/
+
+
 
 // to get default value of a ActionDataType
 var value = actionData.getTypeAndValue().defaultValue
@@ -164,17 +165,9 @@ action.addActionLine(actionLine: ActionLine(data: ["Set volume of default output
 
 // this is an onAction callback
 // if you want to do something when an action is pressed from Touch Portal you have to device an .onAction for each action you create.
-
-// response is :
-/*
-public class Response {
-    public var type: String?
-    public var pluginId: String?
-    public var id: String?
-    public var data: [ResponseData]?
-    public var value: Any?
-    */
 // I run it in a background thread to make sure nothing is blocked, but your results may vary.
+
+// response is a response object
 action.onAction = { response in
     print("action 1")
     //            print(response.data)
@@ -191,6 +184,34 @@ action.onAction = { response in
         }
     }
 }
+
+// response is :
+/*
+public class Response {
+    public var type: String?
+    public var pluginId: String?
+    public var id: String?
+    public var data: [ResponseData]?
+    public var value: Any?
+    */
+
+// hold functionality
+
+// specify that you want this action to have it
+action.hasHoldFunctionality = true
+
+// do something when button is released
+action.onUpAction = { response in
+    print("up pressed")
+    print(response.value)
+}
+
+// do soemthing when hold is started
+action.onDownAction = { response in
+    print("down pressed")
+    print(response.value)
+}
+*/
 
 // monitors when a list is changed inside an action
 action.onListChange = { response in
