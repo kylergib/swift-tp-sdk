@@ -14,6 +14,7 @@ public class Connector {
     public var category: Category
     private var dataList: [ConnectorData]
     public var subCategory: Category?
+    
     private var connectorChange: ((Response) -> Void)?
     public var onConnectorChange: ((Response) -> Void)? {
         get { connectorChange }

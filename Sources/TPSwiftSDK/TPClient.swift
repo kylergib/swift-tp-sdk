@@ -88,7 +88,7 @@ public class TPClient {
                     if let settings = json["values"] as? [[String: Any]] {
                         self.handleSettings(settings: settings)
                     }
-                case "action":
+                case "action", "down", "up":
                     print("received action")
                     let actionId = json["actionId"] as? String
                     let type = json["type"] as? String
@@ -105,7 +105,10 @@ public class TPClient {
                         dataList.append(ResponseData(id: id, value: value))
                     }
                     let action = self.plugin?.getActionById(actionId: actionId!)
-                    action?.onAction?(Response(type: type, pluginId: pluginId, id: actionId, data: dataList, value: value))
+                    let response = Response(type: type, pluginId: pluginId, id: actionId, data: dataList, value: value)
+                    if type == "action"  { action?.onAction?(response) }
+                    else if type == "up"  { action?.onUpAction?(response) }
+                    else if type == "down"  { action?.onDownAction?(response) }
                 case "closePlugin":
                     self.onCloseRequest?()
                 case "connectorChange":

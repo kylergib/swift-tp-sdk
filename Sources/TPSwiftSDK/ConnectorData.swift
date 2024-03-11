@@ -14,7 +14,6 @@ public class ConnectorData {
     public var defaultValue: String
     public var valueChoices: [String]
     
-    // TODO: add connector callback
 
     public init(id: String, dataType: ConnectorDataType, valueChoices: [String] = [], defaultValue: String = "") {
         self.id = id
