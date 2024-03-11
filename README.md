@@ -71,7 +71,7 @@ var plugin: Plugin = Plugin(api: .v7, version: 001, name: "Mac Control", pluginI
 // Touch Portal tells the plugin that a setting has changed
 // returns: a list of SettingResponse objects
 // SettingResponse has a name property and a value property.
-client.onSettingsChange = { settingsList in
+plugin.onSettingsChange = { settingsList in
     settingsList.forEach { setting in
         print("settings change: \(setting.name) - \(setting.value)")
     }
