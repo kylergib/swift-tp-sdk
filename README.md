@@ -68,16 +68,6 @@ var plugin: Plugin = Plugin(api: .v7, version: 001, name: "Mac Control", pluginI
 
 // Callback methods for plugin class
 
-// Touch Portal tells the plugin that a setting has changed
-// returns: a list of SettingResponse objects
-// SettingResponse has a name property and a value property.
-client.onSettingsChange = { settingsList in
-    settingsList.forEach { setting in
-        print("settings change: \(setting.name) - \(setting.value)")
-    }
-}
-
-// setting properties for the entry.tp file
 // some things are not needed if you create the entry.tp file yourself
 // use %TP_PLUGIN_FOLDER% for the base Touch Portal folder
 // the buildEntry method will turn this into: open %TP_PLUGIN_FOLDER%MacControl\/MacControlTP.app
@@ -267,7 +257,51 @@ notification.onNotificationClicked = { response in
 plugin.addNotification(notification: notification)
 ```
 
-// TODO: ADD STATES
+### Plugin:
+
+```swift
+let state1 = State(id: "state1", type: StateType.text, description: "1st state i have", category: plugin.categories["volume"]!, defaultValue: "test")
+
+// have to add to plugin manually
+plugin.addState(state: state1)
+
+// two options for StateType
+public enum StateType: String {
+    case choice
+    case text
+}
+```
+### Settings
+
+```swift
+// add setting
+let setting = Setting(name: "test setting", type: SettingType.number, toolTip: ToolTip(body: "body test"))
+
+// have to add manually
+plugin.addSetting(setting: setting)
+
+// This may change to something similar to how actions are handled
+// Touch Portal tells the plugin that a setting has changed
+// returns: a list of SettingResponse objects
+// SettingResponse has a name property and a value property.
+plugin.onSettingsChange = { settingsList in
+    settingsList.forEach { setting in
+        print("settings change: \(setting.name) - \(setting.value)")
+    }
+}
+
+// tool tip is 
+ToolTip(body: "body test")
+// full tooltip init if wanting to use it
+//ToolTip(body: String, title: String? = nil, docUrl: String? = nil)
+
+//setting types: 
+public enum SettingType: String {
+    case text
+    case number
+}
+
+```
 
 ### Various update options (lists/states/choices)
 
