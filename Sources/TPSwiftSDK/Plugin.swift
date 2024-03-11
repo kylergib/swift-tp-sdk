@@ -228,6 +228,7 @@ public class Plugin {
         actionDict["executionType"] = action.executionType?.rawValue
         actionDict["execution_cmd"] = action.executionCmd
         actionDict["lines"] = buildActionLine(actionLines: action.getActionLines())
+        if (action.hasHoldFunctionality) { actionDict["hasHoldFunctionality"] = true }
         actionDict["data"] = buildActionData(actionDatas: action.getData())
         return actionDict
     }
