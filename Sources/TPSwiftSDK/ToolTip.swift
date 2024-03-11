@@ -14,7 +14,9 @@ public class ToolTip {
     public var body: String
     public var docUrl: String?
     
-    public init(body: String) {
+    public init(body: String, title: String? = nil, docUrl: String? = nil) {
         self.body = body
+        self.title = title
+        self.docUrl = docUrl
     }
 }
