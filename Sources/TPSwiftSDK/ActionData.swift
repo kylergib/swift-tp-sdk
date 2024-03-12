@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import LoggerSwift
 
 public class ActionData {
+    private static var logger = Logger(current: ActionData.self)
     public var id: String
     private var dataType: ActionDataType
     public var type: ActionDataType {
@@ -35,12 +37,21 @@ public class ActionData {
         self.minValue = minValue
         self.maxValue = maxValue
     }
+
+    public static func setLoggerLevel(level: String) {
+        logger.setLevel(level: level)
+    }
+
+    public static func getLoggerLevel() -> String {
+        return logger.getLevel()
+    }
+
     public static func updateActionData(actionDataId: String, data: ActionData) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
-            print("Cannot send update, because tpClient is nul or plugin is nil")
+            logger.error("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-        
+
         var dict = [String: Any]()
         dict["type"] = "updateActionData"
         dict["instanceId"] = actionDataId
@@ -50,7 +61,7 @@ public class ActionData {
         dataDict["minValue"] = data.minValue
         dataDict["maxValue"] = data.maxValue
         dict["value"] = dataDict
-        
+
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }

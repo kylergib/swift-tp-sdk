@@ -35,11 +35,12 @@ public class State {
         dict["type"] = "stateUpdate"
         dict["id"] = stateId
         dict["value"] = value
-        
+
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }
     }
+
     public static func updateStateList(stateId: String, value: [String]) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
             print("Cannot send update, because tpClient is nul or plugin is nil")
@@ -49,31 +50,33 @@ public class State {
         dict["type"] = "stateListUpdate"
         dict["id"] = stateId
         dict["value"] = value
-        
+
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }
     }
+
     public static func updateChoiceList(choiceListId: String, value: [String]) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-        
+
         var dict = [String: Any]()
         dict["type"] = "choiceUpdate"
         dict["id"] = choiceListId
         dict["value"] = value
-        
+
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }
     }
+
     public static func removeState(id: String) {
         var dict = [String: Any]()
         dict["type"] = "removeState"
         dict["id"] = id
-        
+
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }

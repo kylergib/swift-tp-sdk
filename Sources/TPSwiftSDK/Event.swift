@@ -13,7 +13,7 @@ public class Event {
     public var format: String
     public var category: Category
     public var type: EventType = .communicate
-    public var valueChoices: [String]? //unsure if it can be a number
+    public var valueChoices: [String]? // unsure if it can be a number
     public var valueType: EventValueType
     public var valueStateId: String
     public var subCategory: Category?
@@ -26,7 +26,7 @@ public class Event {
     }
 
     public init(id: String, name: String, format: String, category: Category,
-         valueType: EventValueType, valueStateId: String, valueChoices: [String]? = nil)
+                valueType: EventValueType, valueStateId: String, valueChoices: [String]? = nil)
     {
         self.id = id
         self.name = name
@@ -36,8 +36,8 @@ public class Event {
         self.valueStateId = valueStateId
         self.valueChoices = valueChoices
     }
+
     public static func triggerEvent(eventId: String, states: [String: String]) {
-        
         var rootDict = [String: Any]()
         rootDict["type"] = "triggerEvent"
         rootDict["eventId"] = eventId
@@ -46,8 +46,6 @@ public class Event {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }
     }
-    
-    
 }
 
 public enum EventType: String {

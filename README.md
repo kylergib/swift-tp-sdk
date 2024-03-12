@@ -55,6 +55,22 @@ client.onCloseRequest = {
 // starts the client, if Touch Portal is not open, you may need to restart the plugin (but TP should handle it)
 // client.plugin needs to be set from the next section before using client.start()
 client.start()
+
+// onTimeout is called when plugin attempts to connect to Touch Portal, but the connection was unsuccesful
+// usually happens when TP is closed. 
+
+// can attempt to connect again
+client.onTimeout = {
+    sleep(5)
+    self.client.start()
+}
+
+// can exit app, or do whatever you wish
+client.onTimeout = {
+    DispatchQueue.main.async {
+        NSApplication.shared.terminate(nil)
+    }
+}
 ```
 
 ### Plugin:
@@ -81,6 +97,25 @@ plugin.pluginStartCmdMac = "open %TP_PLUGIN_FOLDER%MacControl/MacControlTP.app"
 
 // after plugin is created you need to tell TPClient
 client.plugin = plugin
+
+//TP will broadcast page changes to the plugin
+// if you would like to do something on a page change:
+//repsonse is a PageResponse object
+plugin.onPageResponse = { response in 
+    print(response.pageName)
+    print(response.previousPageName)
+}
+
+// PageResponse properties
+public class PageResponse {
+    public var type: String
+    public var event: String
+    public var pageName: String?
+    public var previousPageName: String?
+    public var deviceIp: String?
+    public var deviceName: String?
+}
+
 ```
 
 ### Configuration
@@ -151,7 +186,8 @@ public enum ActionDataType {
     case color(String)
 
 }
-*/
+
+
 
 // to get default value of a ActionDataType
 var value = actionData.getTypeAndValue().defaultValue
@@ -164,17 +200,9 @@ action.addActionLine(actionLine: ActionLine(data: ["Set volume of default output
 
 // this is an onAction callback
 // if you want to do something when an action is pressed from Touch Portal you have to device an .onAction for each action you create.
-
-// response is :
-/*
-public class Response {
-    public var type: String?
-    public var pluginId: String?
-    public var id: String?
-    public var data: [ResponseData]?
-    public var value: Any?
-    */
 // I run it in a background thread to make sure nothing is blocked, but your results may vary.
+
+// response is a response object
 action.onAction = { response in
     print("action 1")
     //            print(response.data)
@@ -191,6 +219,34 @@ action.onAction = { response in
         }
     }
 }
+
+// response is :
+/*
+public class Response {
+    public var type: String?
+    public var pluginId: String?
+    public var id: String?
+    public var data: [ResponseData]?
+    public var value: Any?
+    */
+
+// hold functionality
+
+// specify that you want this action to have it
+action.hasHoldFunctionality = true
+
+// do something when button is released
+action.onUpAction = { response in
+    print("up pressed")
+    print(response.value)
+}
+
+// do soemthing when hold is started
+action.onDownAction = { response in
+    print("down pressed")
+    print(response.value)
+}
+*/
 
 // monitors when a list is changed inside an action
 action.onListChange = { response in
@@ -257,7 +313,7 @@ notification.onNotificationClicked = { response in
 plugin.addNotification(notification: notification)
 ```
 
-### Plugin:
+### State:
 
 ```swift
 let state1 = State(id: "state1", type: StateType.text, description: "1st state i have", category: plugin.categories["volume"]!, defaultValue: "test")
@@ -284,10 +340,19 @@ plugin.addSetting(setting: setting)
 // Touch Portal tells the plugin that a setting has changed
 // returns: a list of SettingResponse objects
 // SettingResponse has a name property and a value property.
+// using onSettingsChange for the plugin give you a list of settings so they can all be processed at the same time
 plugin.onSettingsChange = { settingsList in
     settingsList.forEach { setting in
         print("settings change: \(setting.name) - \(setting.value)")
     }
+}
+
+// alternatively if you want to only handle the setting change for one setting at a time you can use
+// using onSettingChange on each setting indiviudually, will process one at a time
+// using both may cause issues, so would recommend one or the other, but specific use case will change it.
+setting.onSettingChange = { setting in 
+    print(setting.name)
+    print(setting.value)
 }
 
 // tool tip is 
@@ -361,7 +426,33 @@ DispatchQueue.global(qos: .background).async {
 #endif
 ```
 
+### Logger
+I added a simple logger to make the console cleaner.
+You can change the level of the logger to not see as many console logs.
+Not every class has a logger on it, but the ones that do will have a separate logger variable
+
+```swift
+// you can change the log level like this:
+// the default is "info" and level param is string
+TPClient.setLoggerLevel(level: "debug")
+Plugin.setLoggerLevel(level: "info")
+
+// you can get current log level like this
+// returns a string
+print(Plugin.getLoggerLevel())
+
+// levels that you can set the logger to
+// "info","debug", "fine", "finer", "finest"
+
+// when set to a level, logs will only show if it greater than or equal to that level
+//i.e when set to "info", no other levels will show
+//i.e when set to "fine" - "info", "debug" and "fine" levels will print to console.
+
+// "error", "critical", "fatal" and "warning" levels will always show no matter what.
+```
+
 ### Misc
+
 
 To make it easier when building the plugin and creating a .tpp file for Touch Portal, I use a post-action script when building
 

@@ -1,10 +1,9 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by kyle on 3/5/24.
 //
-
 
 public protocol TextRepresentable {}
 public protocol NumberRepresentable {}

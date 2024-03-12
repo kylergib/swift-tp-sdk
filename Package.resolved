@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "loggerswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kylergib/LoggerSwift",
+      "state" : {
+        "revision" : "292864229fe84ca31f8cfe13cd11d73d43628747",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "swift-atomics",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-atomics.git",

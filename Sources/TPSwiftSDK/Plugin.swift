@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import LoggerSwift
 
 public class Plugin {
-    // LEFT OFF ON ENTRY
+    private static var logger = Logger(current: Plugin.self)
     public var api: ApiVersion
 
     public var version: Int
@@ -32,12 +33,20 @@ public class Plugin {
     public var states = [String: State]() // TODO: replace with state class
     public var subCategories: [String: Category]? // TODO: would this be an array of catogories? maybe child class of category
     public var notifications = [String: TPNotification]()
-    
+
     private var settingsChange: (([SettingResponse]) -> Void)?
     public var onSettingsChange: (([SettingResponse]) -> Void)? {
         get { settingsChange }
         set(value) {
             settingsChange = value
+        }
+    }
+
+    private var pageChange: ((PageResponse) -> Void)?
+    public var onPageChange: ((PageResponse) -> Void)? {
+        get { pageChange }
+        set(value) {
+            pageChange = value
         }
     }
 
@@ -67,6 +76,7 @@ public class Plugin {
     public func addConnector(connector: Connector) {
         connectors[connector.id] = connector
     }
+
     public func addNotification(notification: TPNotification) {
         notifications[notification.id] = notification
     }
@@ -78,15 +88,17 @@ public class Plugin {
     public func getActionById(actionId: String) -> Action? {
         return actions[actionId]
     }
+
     public func getConnectorById(connectorId: String) -> Connector? {
         return connectors[connectorId]
     }
+
     public func getNotificationById(notificationId: String) -> TPNotification? {
         return notifications[notificationId]
     }
 
     public func buildEntry(folderURL: URL, fileName: String) {
-//        print("starting build")
+        Plugin.logger.debug("starting build")
         var rootDict = [String: Any]()
         rootDict["api"] = api.rawValue
         rootDict["version"] = version
@@ -99,7 +111,8 @@ public class Plugin {
         rootDict["plugin_start_cmd_linux"] = pluginStartCmdLinux
         rootDict["settings"] = buildSettings()
         rootDict["categories"] = buildCategories()
-//        print(rootDict)
+        Plugin.logger.debug("\(rootDict)")
+
         do {
             // Convert the dictionary into JSON data
             let jsonData = try JSONSerialization.data(withJSONObject: rootDict, options: .prettyPrinted)
@@ -115,20 +128,20 @@ public class Plugin {
             if !FileManager.default.fileExists(atPath: folderURL.path) {
                 do {
                     try FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil)
-                    print("Folder created at \(folderURL.path)")
+                    Plugin.logger.info("Folder created at \(folderURL.path)")
                 } catch {
-                    print("Error creating folder: \(error)")
+                    Plugin.logger.error("Error creating folder: \(error)")
                     return
                 }
             } else {
-                print("Folder already exists.")
+                Plugin.logger.info("Folder already exists.")
             }
 
             // Write the JSON data to the file
             try jsonData.write(to: fileURL, options: .atomic)
-            print("File saved: \(fileURL)")
+            Plugin.logger.info("File saved: \(fileURL)")
         } catch {
-            print("Error serializing JSON: \(error)")
+            Plugin.logger.error("Error serializing JSON: \(error)")
         }
     }
 
@@ -137,7 +150,7 @@ public class Plugin {
         config["colorDark"] = configuration?.colorDark
         config["colorLight"] = configuration?.colorLight
         config["parentCategory"] = configuration?.parentCategory?.rawValue
-
+//        Plugin.logger.debug("\(config)")
         return config
     }
 
@@ -162,6 +175,7 @@ public class Plugin {
             settingDict["toolTip"] = toolTipDict
             settingList.append(settingDict)
         }
+//        Plugin.logger.debug("\(settingList)")
         return settingList
     }
 
@@ -228,6 +242,7 @@ public class Plugin {
         actionDict["executionType"] = action.executionType?.rawValue
         actionDict["execution_cmd"] = action.executionCmd
         actionDict["lines"] = buildActionLine(actionLines: action.getActionLines())
+        if action.hasHoldFunctionality { actionDict["hasHoldFunctionality"] = true }
         actionDict["data"] = buildActionData(actionDatas: action.getData())
         return actionDict
     }
@@ -316,7 +331,14 @@ public class Plugin {
         stateDict["parentGroup"] = state.parentGroup
         return stateDict
     }
-    
+
+    public static func setLoggerLevel(level: String) {
+        logger.setLevel(level: level)
+    }
+
+    public static func getLoggerLevel() -> String {
+        return logger.getLevel()
+    }
 }
 
 public enum ApiVersion: Int {
