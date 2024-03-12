@@ -60,7 +60,7 @@ public class ActionData {
         dataDict["type"] = data.type.getTypeAndValue().type
         dataDict["minValue"] = data.minValue
         dataDict["maxValue"] = data.maxValue
-        dict["value"] = dataDict
+        dict["value"] = data.valueChoices
 
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
