@@ -55,6 +55,22 @@ client.onCloseRequest = {
 // starts the client, if Touch Portal is not open, you may need to restart the plugin (but TP should handle it)
 // client.plugin needs to be set from the next section before using client.start()
 client.start()
+
+// onTimeout is called when plugin attempts to connect to Touch Portal, but the connection was unsuccesful
+// usually happens when TP is closed. 
+
+// can attempt to connect again
+client.onTimeout = {
+    sleep(5)
+    self.client.start()
+}
+
+// can exit app, or do whatever you wish
+client.onTimeout = {
+    DispatchQueue.main.async {
+        NSApplication.shared.terminate(nil)
+    }
+}
 ```
 
 ### Plugin:
@@ -81,6 +97,25 @@ plugin.pluginStartCmdMac = "open %TP_PLUGIN_FOLDER%MacControl/MacControlTP.app"
 
 // after plugin is created you need to tell TPClient
 client.plugin = plugin
+
+//TP will broadcast page changes to the plugin
+// if you would like to do something on a page change:
+//repsonse is a PageResponse object
+plugin.onPageResponse = { response in 
+    print(response.pageName)
+    print(response.previousPageName)
+}
+
+// PageResponse properties
+public class PageResponse {
+    public var type: String
+    public var event: String
+    public var pageName: String?
+    public var previousPageName: String?
+    public var deviceIp: String?
+    public var deviceName: String?
+}
+
 ```
 
 ### Configuration
@@ -278,7 +313,7 @@ notification.onNotificationClicked = { response in
 plugin.addNotification(notification: notification)
 ```
 
-### Plugin:
+### State:
 
 ```swift
 let state1 = State(id: "state1", type: StateType.text, description: "1st state i have", category: plugin.categories["volume"]!, defaultValue: "test")

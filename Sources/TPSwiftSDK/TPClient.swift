@@ -165,6 +165,16 @@ public class TPClient {
                     }
                     let notification = self.plugin?.getNotificationById(notificationId: notificationId!)
                     notification?.onNotificationClicked?(NotificationResponse(type: type!, notificationId: notificationId!, optionId: optionId!))
+                case "broadcast":
+                    let event = json["event"] as? String
+                    let type = json["type"] as? String
+                    let pageName = json["pageName"] as? String
+                    let previousPageName = json["previousPageName"] as? String
+                    let deviceIp = json["deviceIp"] as? String
+                    let deviceName = json["deviceName"] as? String
+                    if (event == nil || type == nil) { return }
+                    let response = PageResponse(type: type!, event: event!, pageName: pageName, previousPageName: previousPageName, deviceIp: deviceIp, deviceName: deviceName)
+                    self.plugin?.onPageChange?(response)
                 default:
                     print("Could not find match")
                     print(json)
