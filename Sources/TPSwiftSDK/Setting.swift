@@ -18,6 +18,14 @@ public class Setting {
         }
     }
 
+    private var settingChange: ((SettingResponse) -> Void)?
+    public var onSettingChange: ((SettingResponse) -> Void)? {
+        get { settingChange }
+        set(value) {
+            settingChange = value
+        }
+    }
+
     public var maxLength: Int?
     public var isPassword: Bool?
     public var minValue: Int?
@@ -36,17 +44,18 @@ public class Setting {
         self.readOnly = readOnly
         self.toolTip = toolTip
     }
-    public static func updateSetting(settingName:String, value: String) {
+
+    public static func updateSetting(settingName: String, value: String) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
             print("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
-        
+
         var dict = [String: Any]()
         dict["type"] = "settingUpdate"
         dict["name"] = settingName
         dict["value"] = value
-        
+
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }

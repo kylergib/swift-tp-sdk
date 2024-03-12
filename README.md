@@ -340,10 +340,19 @@ plugin.addSetting(setting: setting)
 // Touch Portal tells the plugin that a setting has changed
 // returns: a list of SettingResponse objects
 // SettingResponse has a name property and a value property.
+// using onSettingsChange for the plugin give you a list of settings so they can all be processed at the same time
 plugin.onSettingsChange = { settingsList in
     settingsList.forEach { setting in
         print("settings change: \(setting.name) - \(setting.value)")
     }
+}
+
+// alternatively if you want to only handle the setting change for one setting at a time you can use
+// using onSettingChange on each setting indiviudually, will process one at a time
+// using both may cause issues, so would recommend one or the other, but specific use case will change it.
+setting.onSettingChange = { setting in 
+    print(setting.name)
+    print(setting.value)
 }
 
 // tool tip is 

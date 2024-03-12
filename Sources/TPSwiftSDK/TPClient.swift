@@ -172,7 +172,7 @@ public class TPClient {
                     let previousPageName = json["previousPageName"] as? String
                     let deviceIp = json["deviceIp"] as? String
                     let deviceName = json["deviceName"] as? String
-                    if (event == nil || type == nil) { return }
+                    if event == nil || type == nil { return }
                     let response = PageResponse(type: type!, event: event!, pageName: pageName, previousPageName: previousPageName, deviceIp: deviceIp, deviceName: deviceName)
                     self.plugin?.onPageChange?(response)
                 default:
@@ -192,7 +192,9 @@ public class TPClient {
         var settingList: [SettingResponse] = []
         settings.forEach { setting in
             setting.forEach { (name: String, value: Any) in
-                settingList.append(SettingResponse(name: name, value: value))
+                let response = SettingResponse(name: name, value: value)
+                settingList.append(response)
+                TPClient.tpClient?.plugin?.settings[name]?.onSettingChange?(response)
             }
         }
         TPClient.tpClient?.plugin?.onSettingsChange?(settingList)
