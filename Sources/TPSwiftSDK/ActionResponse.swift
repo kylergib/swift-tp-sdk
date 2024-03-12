@@ -15,7 +15,7 @@ public class Response {
     public var value: Any?
 
     public init(type: String? = nil, pluginId: String? = nil, id: String? = nil,
-         data: [ResponseData]? = nil, value: Any? = nil)
+                data: [ResponseData]? = nil, value: Any? = nil)
     {
         self.type = type
         self.pluginId = pluginId
@@ -28,10 +28,9 @@ public class Response {
 public class ResponseData {
     public var id: String?
     public var value: Any?
-    
+
     public init(id: String?, value: Any?) {
         self.id = id
         self.value = value
     }
-
 }

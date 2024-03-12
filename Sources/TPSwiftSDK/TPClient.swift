@@ -6,11 +6,13 @@
 //
 // import Compression
 import Foundation
+import LoggerSwift
 import NIOCore
 import NIOPosix
 // import SwiftUI
 
 public class TPClient {
+    private static var logger = Logger(current: TPClient.self)
     private var channel: Channel?
     static var currentHandler: MessageHandler?
     static var tpClient: TPClient?
@@ -19,7 +21,6 @@ public class TPClient {
     public var plugin: Plugin?
 
     private var messageReceived: (([String: Any]) -> Void)?
-    // TODO: add callback if it was unsuccessful connecting to TP and try again
     private var connected: ((Bool) -> Void)?
     public var onConnection: ((Bool) -> Void)? {
         get { connected }
@@ -53,31 +54,14 @@ public class TPClient {
         }
     }
 
-//    init() {
-//        currentHandler = MessageHandler()
-//        address = "127.0.0.1" // default is local host, but in touch portal 4 you can go from a separate computer
-//        port = 12136
-//        messageReceived = { json in
-//            var foundElement = false
-//            print("message recieved: ")
-//            print(json)
-//            if let setting = json["settings"] as? [Any] {
-//                self.onSettingsChange?(setting)
-//                foundElement = true
-//            }
-//            if (!foundElement) {
-//                print(json)
-//            }
-//        }
-//        currentHandler?.messageReceivedCallback = messageReceived
-//    }
-
     public init(address: String = "127.0.0.1", port: Int = 12136) {
         TPClient.currentHandler = MessageHandler()
         self.address = address
         self.port = port
         messageReceived = { json in
+            TPClient.logger.debug("Received message")
             if let type = json["type"] as? String {
+                TPClient.logger.debug("message has type")
                 switch type {
                 case "info":
                     if let settings = json["settings"] as? [[String: Any]] {
@@ -92,12 +76,12 @@ public class TPClient {
                         self.onInfo?(Info(sdkVersion: sdkVersion, tpVersionString: tpVersionString, tpVersionCode: tpVersionCode, pluginVersion: pluginVersion, status: status))
                     }
                 case "setting":
-                    print("getting settings")
+                    TPClient.logger.debug("getting settings")
                     if let settings = json["values"] as? [[String: Any]] {
                         self.handleSettings(settings: settings)
                     }
                 case "action", "down", "up":
-                    print("received action")
+                    TPClient.logger.debug("received action")
                     let actionId = json["actionId"] as? String
                     let type = json["type"] as? String
                     let data = json["data"] as? [[String: Any]]
@@ -118,9 +102,10 @@ public class TPClient {
                     else if type == "up" { action?.onUpAction?(response) }
                     else if type == "down" { action?.onDownAction?(response) }
                 case "closePlugin":
+                    TPClient.logger.debug("Received close request")
                     self.onCloseRequest?()
                 case "connectorChange":
-                    print("received connector change")
+                    TPClient.logger.debug("received connector change")
                     let connectorId = json["connectorId"] as? String
                     let type = json["type"] as? String
                     let data = json["data"] as? [[String: Any]]
@@ -139,7 +124,7 @@ public class TPClient {
                     let connector = self.plugin?.getConnectorById(connectorId: connectorId!)
                     connector?.onConnectorChange?(Response(type: type, pluginId: pluginId, id: connectorId, data: dataList, value: value))
                 case "listChange":
-                    print("received list change")
+                    TPClient.logger.debug("received list change")
                     let instanceId = json["instanceId"] as? String
                     let type = json["type"] as? String
                     let values = json["values"] as? [[String: Any]]
@@ -156,7 +141,7 @@ public class TPClient {
                     let action = self.plugin?.getActionById(actionId: actionId!)
                     action?.onListChange?(ListChangeResponse(instanceId: instanceId!, pluginId: pluginId!, value: value, values: dataList, type: type!, actionId: actionId!, listId: listId!))
                 case "notificationOptionClicked":
-                    print("received notification click")
+                    TPClient.logger.debug("received notification click")
                     let notificationId = json["notificationId"] as? String
                     let type = json["type"] as? String
                     let optionId = json["optionId"] as? String
@@ -176,12 +161,12 @@ public class TPClient {
                     let response = PageResponse(type: type!, event: event!, pageName: pageName, previousPageName: previousPageName, deviceIp: deviceIp, deviceName: deviceName)
                     self.plugin?.onPageChange?(response)
                 default:
-                    print("Could not find match")
-                    print(json)
+                    TPClient.logger.warning("Could not find match")
+                    TPClient.logger.warning("\(json)")
                 }
             } else {
-                print("does not have type")
-                print(json)
+                TPClient.logger.error("does not have type")
+                TPClient.logger.error("\(json)")
             }
         }
         TPClient.currentHandler?.messageReceivedCallback = messageReceived
@@ -202,7 +187,7 @@ public class TPClient {
 
     public func start() {
         if plugin == nil {
-            print("Cannot connect to Touch Portal without an Entry class")
+            TPClient.logger.error("Cannot connect to Touch Portal without an Plugin class")
             return
         }
         TPClient.currentHandler?.pluginId = plugin?.pluginId
@@ -224,12 +209,21 @@ public class TPClient {
         }
 
         do {
+            TPClient.logger.debug("Trying to connect")
             channel = try bootstrap.connect(host: address, port: port).wait()
             try channel!.closeFuture.wait()
         } catch {
-            print("Error: \(error)")
+            TPClient.logger.error("Error: \(error)")
             timeout?()
         }
+    }
+
+    public static func setLoggerLevel(level: String) {
+        logger.setLevel(level: level)
+    }
+
+    public static func getLoggerLevel() -> String {
+        return logger.getLevel()
     }
 
 //    public func actionReceived() {}
@@ -237,6 +231,7 @@ public class TPClient {
 }
 
 class MessageHandler: ChannelInboundHandler {
+    private static var logger = Logger(current: MessageHandler.self)
     typealias InboundIn = ByteBuffer
     typealias OutboundOut = ByteBuffer
     public var channel: Channel?
@@ -246,18 +241,21 @@ class MessageHandler: ChannelInboundHandler {
     public var connectedCallback: ((Bool) -> Void)?
 
     public func channelInactive(context: ChannelHandlerContext) {
-        print("Disconnected from \(String(describing: context.remoteAddress))")
-//        connectedCallback?(false)
+        if context.remoteAddress != nil {
+            MessageHandler.logger.info("Disconnected from \(context.remoteAddress!)")
+        }
         TPClient.tpClient?.onConnection?(false)
     }
 
     public func channelActive(context: ChannelHandlerContext) {
-        print("connected to \(String(describing: context.remoteAddress))")
+        if context.remoteAddress != nil {
+            MessageHandler.logger.info("Connected to \(context.remoteAddress!)")
+        }
         channel = context.channel
 //        connectedCallback?(true)
         print("sending message")
-        if pluginId == nil { print("Cannot pair to TP because pluginId is nil") }
-        var pair = """
+        if pluginId == nil { MessageHandler.logger.error("Cannot pair to TP because pluginId is nil") }
+        let pair = """
         {"type":"pair","id":"\(pluginId!)"}
         """
 
@@ -269,16 +267,16 @@ class MessageHandler: ChannelInboundHandler {
         let buffer = unwrapInboundIn(data)
         if let receivedString = buffer.getString(at: 0, length: buffer.readableBytes) {
             guard let jsonData = receivedString.data(using: .utf8) else {
-                print("Error: Cannot convert string to Data")
+                MessageHandler.logger.error("Error: Cannot convert string to Data")
                 return
             }
-            print(jsonData)
+            MessageHandler.logger.finer("\(jsonData)")
             do {
                 if let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
                     messageReceivedCallback?(jsonObject)
                 }
             } catch {
-                print("Error: \(error.localizedDescription)")
+                MessageHandler.logger.error("Error: \(error.localizedDescription)")
             }
         }
     }
@@ -286,18 +284,25 @@ class MessageHandler: ChannelInboundHandler {
     public func sendMessage(message: String) {
 //        if channelHandlerContext == nil { return }
         if channel == nil { return }
-        print("past nil")
+        MessageHandler.logger.debug("Trying to send message: \(message)")
         if let myData = message.data(using: .utf8) {
-            print("after mydata")
             var buffer = channel!.allocator.buffer(capacity: myData.count)
             buffer.writeBytes(myData)
             channel!.writeAndFlush(buffer, promise: nil)
-            print("after send")
+            MessageHandler.logger.debug("Message sent")
         }
     }
 
     public func errorCaught(context: ChannelHandlerContext, error: Error) {
-        print("\(error)")
+        MessageHandler.logger.error("\(error)")
         context.close(promise: nil)
+    }
+
+    public static func setLoggerLevel(level: String) {
+        logger.setLevel(level: level)
+    }
+
+    public static func getLoggerLevel() -> String {
+        return logger.getLevel()
     }
 }

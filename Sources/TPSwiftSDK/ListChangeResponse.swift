@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by kyle on 3/10/24.
 //
@@ -15,7 +15,7 @@ public class ListChangeResponse {
     public var type: String
     public var actionId: String
     public var listId: String
-    
+
     public init(instanceId: String, pluginId: String, value: Any? = nil, values: [ResponseData]? = nil, type: String, actionId: String, listId: String) {
         self.instanceId = instanceId
         self.pluginId = pluginId
@@ -25,6 +25,4 @@ public class ListChangeResponse {
         self.actionId = actionId
         self.listId = listId
     }
-    
-    
 }

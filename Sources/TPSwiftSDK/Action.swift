@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import LoggerSwift
 
 public class Action {
+    private static var logger = Logger(current: Action.self)
     public var id: String
     public var name: String
     // name languages?
@@ -62,6 +64,14 @@ public class Action {
         self.executionCmd = executionCmd
     }
 
+    public static func setLoggerLevel(level: String) {
+        logger.setLevel(level: level)
+    }
+
+    public static func getLoggerLevel() -> String {
+        return logger.getLevel()
+    }
+
     public func addData(data: ActionData) {
         dataList.append(data)
     }
@@ -80,7 +90,7 @@ public class Action {
 
     public static func updateActionList(actionDataId: String, value: [String], actionId: String) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
-            print("Cannot send update, because tpClient is nul or plugin is nil")
+            logger.error("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
         var dict = [String: Any]()

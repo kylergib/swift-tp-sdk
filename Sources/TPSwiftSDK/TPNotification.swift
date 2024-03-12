@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by kyle on 3/10/24.
 //
@@ -28,6 +28,7 @@ public class TPNotification {
         self.options = options
         TPNotification.createNotification(notificationId: id, title: title, message: message, options: options)
     }
+
     public static func createNotification(notificationId: String, title: String, message: String, options: [NotifcationOption]) {
         if options.count < 1 {
             print("atleast 1 option is required")
@@ -50,9 +51,6 @@ public class TPNotification {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }
     }
-    
-    
-    
 }
 
 public class NotifcationOption {

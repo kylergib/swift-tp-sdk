@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import LoggerSwift
 
 public class Setting {
+    private static var logger = Logger(current: Action.self)
     public var name: String
     public var valueDefault: String?
     private var settingType: SettingType
@@ -47,7 +49,7 @@ public class Setting {
 
     public static func updateSetting(settingName: String, value: String) {
         if TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil {
-            print("Cannot send update, because tpClient is nul or plugin is nil")
+            logger.error("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
 
@@ -59,6 +61,14 @@ public class Setting {
         if let jsonString = Util.dictToJsonString(dict: dict) {
             TPClient.currentHandler?.sendMessage(message: jsonString + "\n")
         }
+    }
+
+    public static func setLoggerLevel(level: String) {
+        logger.setLevel(level: level)
+    }
+
+    public static func getLoggerLevel() -> String {
+        return logger.getLevel()
     }
 }
 

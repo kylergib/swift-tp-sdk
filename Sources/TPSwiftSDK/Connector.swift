@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import LoggerSwift
 
 public class Connector {
+    private static var logger = Logger(current: Connector.self)
     public var id: String
     public var name: String
     public var format: String
@@ -31,6 +33,13 @@ public class Connector {
         self.category = category
         self.dataList = dataList
     }
+    public static func setLoggerLevel(level: String) {
+            logger.setLevel(level: level)
+        }
+
+        public static func getLoggerLevel() -> String {
+            return logger.getLevel()
+        }
     public func addData(data: ConnectorData) {
         dataList.append(data)
     }
@@ -39,7 +48,7 @@ public class Connector {
     }
     public static func updateConnectorData(connectorId: String, value: Int) {
         if (TPClient.tpClient == nil || TPClient.tpClient!.plugin == nil) {
-            print("Cannot send update, because tpClient is nul or plugin is nil")
+            logger.error("Cannot send update, because tpClient is nul or plugin is nil")
             return
         }
         let message = """

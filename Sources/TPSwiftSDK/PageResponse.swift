@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by kyle on 3/12/24.
 //
@@ -14,7 +14,7 @@ public class PageResponse {
     public var previousPageName: String?
     public var deviceIp: String?
     public var deviceName: String?
-    
+
     public init(type: String, event: String, pageName: String? = nil, previousPageName: String? = nil, deviceIp: String? = nil, deviceName: String? = nil) {
         self.type = type
         self.event = event

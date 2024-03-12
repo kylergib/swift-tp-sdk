@@ -26,9 +26,11 @@ public class ActionLine {
     public func addSuggestion(key: String, value: Any) {
         suggestions[key] = value
     }
+
     public func getData() -> [String] {
         return data
     }
+
     public func getSuggestions() -> [String: Any] {
         return suggestions
     }

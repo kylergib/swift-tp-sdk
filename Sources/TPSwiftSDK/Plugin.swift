@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import LoggerSwift
 
 public class Plugin {
-    // LEFT OFF ON ENTRY
+    private static var logger = Logger(current: Plugin.self)
     public var api: ApiVersion
 
     public var version: Int
@@ -97,7 +98,7 @@ public class Plugin {
     }
 
     public func buildEntry(folderURL: URL, fileName: String) {
-//        print("starting build")
+        Plugin.logger.debug("starting build")
         var rootDict = [String: Any]()
         rootDict["api"] = api.rawValue
         rootDict["version"] = version
@@ -110,7 +111,8 @@ public class Plugin {
         rootDict["plugin_start_cmd_linux"] = pluginStartCmdLinux
         rootDict["settings"] = buildSettings()
         rootDict["categories"] = buildCategories()
-//        print(rootDict)
+        Plugin.logger.debug("\(rootDict)")
+
         do {
             // Convert the dictionary into JSON data
             let jsonData = try JSONSerialization.data(withJSONObject: rootDict, options: .prettyPrinted)
@@ -126,20 +128,20 @@ public class Plugin {
             if !FileManager.default.fileExists(atPath: folderURL.path) {
                 do {
                     try FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil)
-                    print("Folder created at \(folderURL.path)")
+                    Plugin.logger.info("Folder created at \(folderURL.path)")
                 } catch {
-                    print("Error creating folder: \(error)")
+                    Plugin.logger.error("Error creating folder: \(error)")
                     return
                 }
             } else {
-                print("Folder already exists.")
+                Plugin.logger.info("Folder already exists.")
             }
 
             // Write the JSON data to the file
             try jsonData.write(to: fileURL, options: .atomic)
-            print("File saved: \(fileURL)")
+            Plugin.logger.info("File saved: \(fileURL)")
         } catch {
-            print("Error serializing JSON: \(error)")
+            Plugin.logger.error("Error serializing JSON: \(error)")
         }
     }
 
@@ -148,7 +150,7 @@ public class Plugin {
         config["colorDark"] = configuration?.colorDark
         config["colorLight"] = configuration?.colorLight
         config["parentCategory"] = configuration?.parentCategory?.rawValue
-
+//        Plugin.logger.debug("\(config)")
         return config
     }
 
@@ -173,6 +175,7 @@ public class Plugin {
             settingDict["toolTip"] = toolTipDict
             settingList.append(settingDict)
         }
+//        Plugin.logger.debug("\(settingList)")
         return settingList
     }
 
@@ -327,6 +330,14 @@ public class Plugin {
         stateDict["valueChoices"] = state.valueChoices
         stateDict["parentGroup"] = state.parentGroup
         return stateDict
+    }
+
+    public static func setLoggerLevel(level: String) {
+        logger.setLevel(level: level)
+    }
+
+    public static func getLoggerLevel() -> String {
+        return logger.getLevel()
     }
 }
 
