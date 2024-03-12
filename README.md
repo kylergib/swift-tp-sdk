@@ -426,7 +426,33 @@ DispatchQueue.global(qos: .background).async {
 #endif
 ```
 
+### Logger
+I added a simple logger to make the console cleaner.
+You can change the level of the logger to not see as many console logs.
+Not every class has a logger on it, but the ones that do will have a separate logger variable
+
+```swift
+// you can change the log level like this:
+// the default is "info" and level param is string
+TPClient.setLoggerLevel(level: "debug")
+Plugin.setLoggerLevel(level: "info")
+
+// you can get current log level like this
+// returns a string
+print(Plugin.getLoggerLevel())
+
+// levels that you can set the logger to
+// "info","debug", "fine", "finer", "finest"
+
+// when set to a level, logs will only show if it greater than or equal to that level
+//i.e when set to "info", no other levels will show
+//i.e when set to "fine" - "info", "debug" and "fine" levels will print to console.
+
+// "error", "critical", "fatal" and "warning" levels will always show no matter what.
+```
+
 ### Misc
+
 
 To make it easier when building the plugin and creating a .tpp file for Touch Portal, I use a post-action script when building
 
