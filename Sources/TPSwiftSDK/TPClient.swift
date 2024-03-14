@@ -266,17 +266,20 @@ class MessageHandler: ChannelInboundHandler {
     public func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         let buffer = unwrapInboundIn(data)
         if let receivedString = buffer.getString(at: 0, length: buffer.readableBytes) {
-            guard let jsonData = receivedString.data(using: .utf8) else {
-                MessageHandler.logger.error("Error: Cannot convert string to Data")
-                return
-            }
-            MessageHandler.logger.finer("\(jsonData)")
-            do {
-                if let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-                    messageReceivedCallback?(jsonObject)
+            let splitLines = receivedString.split(separator: "\n")
+            splitLines.forEach { line in
+                guard let jsonData = line.data(using: .utf8) else {
+                    MessageHandler.logger.error("Error: Cannot convert string to Data")
+                    return
                 }
-            } catch {
-                MessageHandler.logger.error("Error: \(error.localizedDescription)")
+                MessageHandler.logger.finer("\(jsonData)")
+                do {
+                    if let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                        messageReceivedCallback?(jsonObject)
+                    }
+                } catch {
+                    MessageHandler.logger.error("Error: \(error.localizedDescription)")
+                }
             }
         }
     }
